@@ -22,7 +22,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fmt": "./node_modules/prettier/bin-prettier.js --write './src/**/*.{tsx,jsx,ts,js,css,json}'"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +44,7 @@
     ]
   },
   "devDependencies": {
-    "@types/three": "^0.133.1"
+    "@types/three": "^0.133.1",
+    "prettier": "^2.4.1"
   }
 }
