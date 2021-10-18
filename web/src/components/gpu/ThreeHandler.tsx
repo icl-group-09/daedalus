@@ -1,10 +1,8 @@
-import { useEffect, useRef } from "react"
-
 import * as THREE from "three"
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
-function init(domElem: HTMLElement, width: number, height: number) {
+function init(domElem: HTMLElement, width: number, height: number): void {
   const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(width, height)
@@ -40,30 +38,7 @@ function init(domElem: HTMLElement, width: number, height: number) {
     render()
   })
 
-  return { renderer, scene, camera }
+  renderer.render(scene, camera)
 }
 
-type GPUViewProps = {
-  width: number
-  height: number
-}
-
-const GPUView = ({ width, height }: GPUViewProps) => {
-  const css = { width: `${width}px`, height: `${height}px` }
-
-  const elemRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // Run the first time this component renders
-    const { renderer, scene, camera } = init(elemRef.current!, width, height)
-    renderer.render(scene, camera)
-  })
-
-  return (
-    <div className="gpu-view" style={css}>
-      <div className="gpu-view-frame" ref={elemRef}></div>
-    </div>
-  )
-}
-
-export default GPUView
+export { init }
