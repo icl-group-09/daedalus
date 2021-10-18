@@ -1,5 +1,6 @@
 import { useState } from "react"
 import GPUView from "./gpu/GPUView"
+import HelloWorld from "./api/HelloWorld"
 
 function App() {
   // These are here just for the demo. Will be removed
@@ -20,6 +21,7 @@ function App() {
 
   return (
     <div className="App" style={cssCenter}>
+      <HelloWorld />
       <h1>The view should resize by call of 'funkyFunc'</h1>
       <GPUView height={h} width={w} />
     </div>
