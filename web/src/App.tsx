@@ -11,6 +11,12 @@ function App() {
     setH(y)
   }
 
+  const [showPointCloud, setShowPointCloud] = useState(true);
+
+  const handleClick = () => {
+    setShowPointCloud(!showPointCloud);
+  };
+
   const cssCenter = {
     textAlign: "center",
     display: "flex",
@@ -23,7 +29,13 @@ function App() {
     <div className="App" style={cssCenter}>
       <HelloWorld />
       <h1>The view should resize by call of 'funkyFunc'</h1>
+      <button onClick={handleClick}>Show Point Cloud</button>
+      <button>Show Heat Map</button>
+      <button>Show 2D Map</button>
+      {showPointCloud &&
       <GPUView height={h} width={w} />
+    }
+    
     </div>
   )
 }
