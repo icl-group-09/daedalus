@@ -37,7 +37,9 @@ jobs:
 #        uses: codecov/codecov-action@v1
       
       - name: Build
-        run: npm run build
+        run: |
+          cd web
+          npm run build
         
 #       - name: Deploy
 #         run: |
