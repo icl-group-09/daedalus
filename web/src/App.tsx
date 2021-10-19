@@ -1,3 +1,4 @@
+import React from "react"
 import { useState, useEffect } from "react"
 import GPUView from "./components/gpu/GPUView"
 import getHello from "./services/GetHello"
