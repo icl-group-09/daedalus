@@ -1,12 +1,10 @@
 import { useState, useEffect, createContext } from "react";
 import GPUView from "./components/gpu/GPUView";
-import getHello from "./services/GetHello";
 
 export const EnableGPUContext = createContext(true);
 
 function App() {
   // These are here just for the demo. Will be removed
-  const [toPrint, setToPrint] = useState("Nothing from the server yet!");
   const [w, setW] = useState(800);
   const [h, setH] = useState(800);
   (window as any).funkyFunc = (x: number, y: number) => {
@@ -22,13 +20,10 @@ function App() {
     justifyContent: "center",
   } as const;
 
-  useEffect(() => {
-    getHello().then(resObj => setToPrint(JSON.stringify(resObj)));
-  });
+  useEffect(() => {});
 
   return (
     <div className="App" style={cssCenter}>
-      <div> {toPrint} </div>
       <h1>Welcome to Daedalus!</h1>
       <GPUView height={h} width={w} />
     </div>

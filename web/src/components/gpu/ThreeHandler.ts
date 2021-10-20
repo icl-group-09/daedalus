@@ -30,7 +30,7 @@ function init(domElem: HTMLElement, width: number, height: number): void {
   controls.maxDistance = 10;
 
   const loader = new PCDLoader();
-  loader.load("online.pcd", points => {
+  loader.load("/getRandomPcd", points => {
     points.geometry.center();
     points.geometry.rotateX(Math.PI);
     scene.add(points);
