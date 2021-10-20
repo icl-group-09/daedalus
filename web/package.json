@@ -47,5 +47,8 @@
     "@types/three": "^0.133.1",
     "prettier": "^2.4.1"
   },
+  "jest": {
+    "transformIgnorePatterns": ["node_modules/(?!(three/examples|three/src))"]
+  },
   "proxy": "http://localhost:5000"
 }

@@ -1,5 +1,5 @@
 function getHello(): Promise<any> {
-   return fetch('/hw').then(response => response.json());
+  return fetch("/hw").then(response => response.json());
 }
 
-export default getHello
+export default getHello;

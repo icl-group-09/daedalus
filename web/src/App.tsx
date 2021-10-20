@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react"
-import GPUView from "./components/gpu/GPUView"
-import getHello from "./services/GetHello"
+import { useState, useEffect, createContext } from "react";
+import GPUView from "./components/gpu/GPUView";
+import getHello from "./services/GetHello";
+
+export const EnableGPUContext = createContext(true);
 
 function App() {
   // These are here just for the demo. Will be removed
-  const [toPrint, setToPrint] = useState("Nothing from the server yet!")
-  const [w, setW] = useState(800)
-  const [h, setH] = useState(800)
-  ;(window as any).funkyFunc = (x: number, y: number) => {
-    setW(x)
-    setH(y)
-  }
+  const [toPrint, setToPrint] = useState("Nothing from the server yet!");
+  const [w, setW] = useState(800);
+  const [h, setH] = useState(800);
+  (window as any).funkyFunc = (x: number, y: number) => {
+    setW(x);
+    setH(y);
+  };
 
   const cssCenter = {
     textAlign: "center",
@@ -18,19 +20,19 @@ function App() {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  } as const
+  } as const;
 
   useEffect(() => {
-    getHello().then(resObj => setToPrint(JSON.stringify(resObj)))
-  })
+    getHello().then(resObj => setToPrint(JSON.stringify(resObj)));
+  });
 
   return (
     <div className="App" style={cssCenter}>
       <div> {toPrint} </div>
-      <h1>The view should resize by call of 'funkyFunc'</h1>
+      <h1>Welcome to Daedalus!</h1>
       <GPUView height={h} width={w} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
