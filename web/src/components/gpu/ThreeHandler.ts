@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-function init(domElem: HTMLElement, width: number, height: number): void {
+function init(domElem: HTMLElement, width: number, height: number, pcd: string): void {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(width, height);
@@ -30,7 +30,7 @@ function init(domElem: HTMLElement, width: number, height: number): void {
   controls.maxDistance = 10;
 
   const loader = new PCDLoader();
-  loader.load("/getRandomPcd", points => {
+  loader.load(`/getPcd/${pcd}.pcd`, points => {
     points.geometry.center();
     points.geometry.rotateX(Math.PI);
     scene.add(points);
