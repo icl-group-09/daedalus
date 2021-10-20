@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import GPUView from "./components/gpu/GPUView";
-import init from "./components/gpu/ThreeHandler";
+import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import getHello from "./services/GetHello";
 
 function App() {
@@ -26,11 +26,13 @@ function App() {
     getHello().then(resObj => setToPrint(JSON.stringify(resObj)));
   });
 
+  const graphicsHandler: IGraphicsHandler = new ThreeHandler(w, h);
+
   return (
     <div className="App" style={cssCenter}>
       <div> {toPrint} </div>
       <h1>The view should resize by call of 'funkyFunc'</h1>
-      <GPUView height={h} width={w} initFunc={init} />
+      <GPUView width={w} height={h} graphicsHandler={graphicsHandler} />
     </div>
   );
 }
