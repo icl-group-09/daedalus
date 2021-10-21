@@ -1,7 +1,7 @@
 import React from "react";
 import GPUView from "./GPUView";
 import { IGraphicsHandler } from "./ThreeHandler";
-import { mount } from "enzyme";
+import { render } from "@testing-library/react";
 
 jest.mock("./ThreeHandler");
 
@@ -11,7 +11,7 @@ test("Expect inital GPUView to call renderPCD on mount", () => {
     resizeRenderer: jest.fn((width: number, height: number) => {}),
   };
 
-  mount(
+  render(
     <GPUView height={80} width={80} graphicsHandler={mockGraphicsHandler} />
   );
 
