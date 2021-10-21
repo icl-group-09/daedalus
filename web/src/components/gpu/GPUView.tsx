@@ -1,27 +1,28 @@
-import { useEffect, useRef, useContext } from "react";
-import { EnableGPUContext } from "../../App";
-import { init } from "./ThreeHandler";
+import React from "react";
+import { IGraphicsHandler } from "./ThreeHandler";
+import { useEffect, useRef } from "react";
 
 type GPUViewProps = {
   width: number;
   height: number;
-  pcd: string;
-  mountView?: (domElem: HTMLElement, width: number, height: number) => void;
+  graphicsHandler: IGraphicsHandler;
+  pcdFilename: string;
 };
 
-const mountNothing = (domElem: HTMLElement, width: number, height: number, pcd: string) => {
-  return;
-};
-
-const GPUView = ({ width, height, mountView, pcd }: GPUViewProps) => {
-  const toCall = !useContext(EnableGPUContext)
-    ? mountNothing
-    : mountView ?? init;
+const GPUView = ({
+  width,
+  height,
+  graphicsHandler,
+  pcdFilename,
+}: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
   const elemRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    toCall(elemRef.current!, width, height, pcd);
+    // Run the first time this component renders
+    graphicsHandler.renderPCD(elemRef.current!, pcdFilename);
+    graphicsHandler.resizeRenderer(width, height);
   });
 
   return (

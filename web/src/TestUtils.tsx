@@ -1,3 +1,4 @@
+import React from "react";
 import { EnableGPUContext } from "./App";
 
 export const disableGPU = (comp: JSX.Element) => {

@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "fmt": "./node_modules/prettier/bin-prettier.js --write './src/**/*.{tsx,jsx,ts,js,css,json}'"
   },
@@ -44,11 +44,16 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/preset-typescript": "^7.15.0",
     "@types/three": "^0.133.1",
     "prettier": "^2.4.1"
   },
   "jest": {
-    "transformIgnorePatterns": ["node_modules/(?!(three/examples|three/src))"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!(three/examples|three/src))"
+    ]
   },
   "proxy": "http://localhost:5000"
 }
