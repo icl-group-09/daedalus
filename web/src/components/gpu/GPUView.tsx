@@ -1,27 +1,27 @@
 import React from "react";
-import { useEffect, useRef } from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
+import { useEffect, useRef } from "react";
 
 type GPUViewProps = {
   width: number;
   height: number;
   graphicsHandler: IGraphicsHandler;
+  pcdFilename: string;
 };
 
-const GPUView = ({ width, height, graphicsHandler }: GPUViewProps) => {
+const GPUView = ({
+  width,
+  height,
+  graphicsHandler,
+  pcdFilename,
+}: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
   const elemRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Run the first time this component renders
-    // and anytime graphicsHandler changes
-    graphicsHandler.renderPCD(elemRef.current!);
-  }, [graphicsHandler]);
-
-  useEffect(() => {
-    // Run the first time this component renders
-    // and anytime width, height or graphics handler changes
+    graphicsHandler.renderPCD(elemRef.current!, pcdFilename);
     graphicsHandler.resizeRenderer(width, height);
   });
 
