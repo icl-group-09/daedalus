@@ -29,6 +29,9 @@ jobs:
         run: |
           cd web
           npm install
+          
+      - name: Run the tests 
+        run: npm test
         
 #       - name: Run the tests and generate coverage report
 #        run: npm test -- --coverage
