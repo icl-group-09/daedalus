@@ -5,14 +5,15 @@ import { init } from "./ThreeHandler";
 type GPUViewProps = {
   width: number;
   height: number;
+  pcd: string;
   mountView?: (domElem: HTMLElement, width: number, height: number) => void;
 };
 
-const mountNothing = (domElem: HTMLElement, width: number, height: number) => {
+const mountNothing = (domElem: HTMLElement, width: number, height: number, pcd: string) => {
   return;
 };
 
-const GPUView = ({ width, height, mountView }: GPUViewProps) => {
+const GPUView = ({ width, height, mountView, pcd }: GPUViewProps) => {
   const toCall = !useContext(EnableGPUContext)
     ? mountNothing
     : mountView ?? init;
@@ -20,7 +21,7 @@ const GPUView = ({ width, height, mountView }: GPUViewProps) => {
 
   const elemRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    toCall(elemRef.current!, width, height);
+    toCall(elemRef.current!, width, height, pcd);
   });
 
   return (
