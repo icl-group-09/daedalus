@@ -1,9 +1,9 @@
 
 import "./App.css"
-import React from "react";
 import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
+import HelloWorld from "./api/HelloWorld"
 
 export const EnableGPUContext = createContext(true);
 
