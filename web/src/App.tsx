@@ -1,16 +1,30 @@
-import { useState } from "react"
-import GPUView from "./gpu/GPUView"
-import HelloWorld from "./api/HelloWorld"
+
 import "./App.css"
+import React from "react";
+import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
+import { useState, createContext, useContext } from "react";
+import GPUView from "./components/gpu/GPUView";
+
+export const EnableGPUContext = createContext(true);
+
+const dummyGraphicsHandler: IGraphicsHandler = {
+  renderPCD: (domElement: HTMLElement, pcdFilename: String) => {},
+  resizeRenderer: (width: number, height: number) => {},
+};
 
 function App() {
   // These are here just for the demo. Will be removed
-  const [w, setW] = useState(800)
-  const [h, setH] = useState(800)
-  ;(window as any).funkyFunc = (x: number, y: number) => {
-    setW(x)
-    setH(y)
-  }
+  const [pcd, setPcd] = useState("personFront");
+  const [w, setW] = useState(800);
+  const [h, setH] = useState(800);
+  (window as any).funkyFunc = (x: number, y: number) => {
+    setW(x);
+    setH(y);
+  };
+
+  (window as any).setPcd = (pcdName: string) => {
+    setPcd(pcdName);
+  };
 
   const [showPointCloud, setShowPointCloud] = useState(true);
 
@@ -24,23 +38,32 @@ function App() {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  } as const
+  } as const;
+
+  const graphicsHandler = !useContext(EnableGPUContext)
+    ? dummyGraphicsHandler
+    : new ThreeHandler(w, h);
 
   return (
     <div className="App" style={cssCenter}>
+
       <HelloWorld />
-      <h1>The view should resize by call of 'funkyFunc'</h1>
+      <h1>Welcome to Daedalus!</h1>
       <div>
       <button onClick={handleClick}>Show Point Cloud</button>
       <button>Show Heat Map</button>
       <button>Show 2D Map</button>
       </div>
       {showPointCloud &&
-      <GPUView height={h} width={w} />
+      <GPUView
+        width={w}
+        height={h}
+        graphicsHandler={graphicsHandler}
+        pcdFilename={pcd} />
     }
     
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
