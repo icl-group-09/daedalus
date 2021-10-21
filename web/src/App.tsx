@@ -12,7 +12,7 @@ const dummyGraphicsHandler: IGraphicsHandler = {
 
 function App() {
   // These are here just for the demo. Will be removed
-  const [pcd, setPcd] = useState("personFront");
+  const [pcd, setPcd] = useState("online");
   const [w, setW] = useState(800);
   const [h, setH] = useState(800);
   (window as any).funkyFunc = (x: number, y: number) => {
