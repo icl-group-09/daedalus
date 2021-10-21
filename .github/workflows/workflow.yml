@@ -31,7 +31,9 @@ jobs:
           npm install
           
       - name: Run the tests 
-        run: npm test
+        run: |
+          cd web
+          npm test
         
 #       - name: Run the tests and generate coverage report
 #        run: npm test -- --coverage
