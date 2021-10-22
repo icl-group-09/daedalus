@@ -1,5 +1,45 @@
-canvas {
-  position: fixed;
-  left: 0;
-  top: 0;
+button {
+  border-radius: 10px;
+  background: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 12px;
+  margin: 20px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transition: 0.3s;
+}
+
+button:nth-child(1) {
+  border: 1px solid #FF6862;
+  color: #FF6862;
+}
+
+button:nth-child(1):hover {
+  background: #FF6862;
+  color: white;
+}
+
+button:nth-child(2) {
+  border: 1px solid #62D8FF;
+  color: #62D8FF;
+}
+
+button:nth-child(2):hover {
+  background: #62D8FF;
+  color: white;
+}
+
+button:nth-child(3) {
+  border: 1px solid #D862FF;
+  color: #D862FF;
+}
+
+button:nth-child(3):hover {
+  background: #D862FF;
+  color: white;
 }

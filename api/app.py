@@ -8,6 +8,10 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, _
 
 app = Flask(__name__)
 
+@app.route("/idle", methods=["GET"])
+def get_state():
+    return {"state": "active"}
+
 # For now just download a file
 @app.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
