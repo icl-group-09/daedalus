@@ -1,0 +1,13 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd api &&
+pipenv run pylint $(git ls-files '*.py') &&
+pipenv run pyright $(git ls-files '*.py') &&
+cd ..
+
+cd web &&
+npm run test &&
+cd ..
+
+
