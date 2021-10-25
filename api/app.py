@@ -1,3 +1,5 @@
+from typing import Dict
+
 from flask.wrappers import Response
 from flask import Flask, send_file
 from . import config
@@ -8,6 +10,11 @@ from azure.storage.blob import BlobServiceClient
 
 app = Flask(__name__)
 
+@app.route("/idle", methods=["GET"])
+def get_state() -> Dict[str, str]:
+    return {"state": "active"}
+
+# For now just download a file
 @app.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
     download_file_path = os.path.join(config.PCD_RELATIVE_DIRECTORY + filename)
