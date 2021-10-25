@@ -11,7 +11,6 @@ app = Flask(__name__)
 @app.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
     download_file_path = os.path.join(config.PCD_RELATIVE_DIRECTORY + filename)
-
     try:
         # Connect to blob and return the needed file
         connect_str = config.AZURE_STORAGE_CONNECTION_STRING
