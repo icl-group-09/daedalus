@@ -1,8 +1,8 @@
-import "./App.css"
+import React from "react";
+import "./App.css";
 import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
-import TestState from "./api/TestState";
 
 export const EnableGPUContext = createContext(true);
 
@@ -45,22 +45,20 @@ function App() {
 
   return (
     <div className="App" style={cssCenter}>
-
-      <TestState />
       <h1>Welcome to Daedalus!</h1>
       <div>
-      <button onClick={handleClick}>Show Point Cloud</button>
-      <button>Show Heat Map</button>
-      <button>Show 2D Map</button>
+        <button onClick={handleClick}>Show Point Cloud</button>
+        <button>Show Heat Map</button>
+        <button>Show 2D Map</button>
       </div>
-      {showPointCloud &&
-      <GPUView
-        width={w}
-        height={h}
-        graphicsHandler={graphicsHandler}
-        pcdFilename={pcd} />
-    }
-    
+      {showPointCloud && (
+        <GPUView
+          width={w}
+          height={h}
+          graphicsHandler={graphicsHandler}
+          pcdFilename={pcd}
+        />
+      )}
     </div>
   );
 }

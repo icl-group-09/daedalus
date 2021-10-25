@@ -53,7 +53,8 @@
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!(three/examples|three/src))"
-    ]
+    ],
+    "moduleNameMapper": { "\\.(css|less)$": "<rootDir>/src/__mocks__/css/styleMock.js" }
   },
   "proxy": "http://localhost:5000"
 }
