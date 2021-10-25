@@ -1,0 +1,6 @@
+{
+  "reportMissingParameterType": true,
+  "reportGeneralTypeIssues": true,
+  "reportUnusedImport": true,
+  "reportMissingTypeStubs": false
+}
