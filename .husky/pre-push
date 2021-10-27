@@ -4,6 +4,7 @@
 cd api &&
 pipenv run pylint $(git ls-files '*.py') &&
 pipenv run pyright $(git ls-files '*.py') &&
+pipenv run python -m unittest discover tests &&
 cd ..
 
 cd web &&
