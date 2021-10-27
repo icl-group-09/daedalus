@@ -1,4 +1,5 @@
-from flask import Blueprint, send_file, Response
+from flask import Blueprint, send_file
+from flask.wrappers import Response
 import os
 import config
 from services.AzureService import AzureService
