@@ -52,7 +52,7 @@ function App() {
         <button>Show Heat Map</button>
         <button>Show 2D Map</button>
       </div>
-      <PcdMenu/>
+      <PcdMenu pcd={pcd} setPcd={setPcd}/>
       {showPointCloud && (
         <GPUView
           width={w}
