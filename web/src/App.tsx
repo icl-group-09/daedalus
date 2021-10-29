@@ -3,6 +3,7 @@ import "./App.css";
 import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
+import PcdMenu from "./components/menu/PcdMenu";
 
 export const EnableGPUContext = createContext(true);
 
@@ -51,6 +52,7 @@ function App() {
         <button>Show Heat Map</button>
         <button>Show 2D Map</button>
       </div>
+      <PcdMenu pcd={pcd} setPcd={setPcd}/>
       {showPointCloud && (
         <GPUView
           width={w}
