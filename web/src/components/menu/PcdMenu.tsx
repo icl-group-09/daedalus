@@ -1,5 +1,5 @@
 import React from "react";
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,8 +11,7 @@ type PcdMenuProps = {
   setPcd: Dispatch<SetStateAction<string>>;
 };
 
-const PcdMenu = ({pcd, setPcd,}: PcdMenuProps) => {
-  
+const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
   const handleChange = (event: SelectChangeEvent) => {
     setPcd(event.target.value as string);
   };
@@ -22,13 +21,16 @@ const PcdMenu = ({pcd, setPcd,}: PcdMenuProps) => {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id='demo-simple-select-label'>PCD</InputLabel>
+        <InputLabel id="demo-simple-select-label" data-testid="select-label">
+          PCD
+        </InputLabel>
         <Select
-          labelId='demo-simple-select-label'
-          id='demo-simple-select'
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={pcd}
-          label='Age'
+          //   label='Age'
           onChange={handleChange}
+          data-testid="select-menu"
         >
           {pcdList.map((pcd, i) => {
             return (
@@ -41,5 +43,5 @@ const PcdMenu = ({pcd, setPcd,}: PcdMenuProps) => {
       </FormControl>
     </Box>
   );
-}
+};
 export default PcdMenu;
