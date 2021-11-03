@@ -58,7 +58,43 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private loadPCD(pcdFilename: String) {
     const loader = new PCDLoader();
-    loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
+    loader.load(`/online.pcd`, points => {
+      console.log(points.geometry.attributes.position);
+      console.log(points.geometry.attributes.color);
+
+      const numPoints = points.geometry.attributes.position.count;
+      const colors = [];
+      var minY = 1000000;
+      var maxY = -1000000;
+      for (var i = 0; i < numPoints; i++) {
+        const y = points.geometry.attributes.position.array[i * 3 + 1];
+
+        if (y < minY) {
+          minY = y;
+        }
+
+        if (y > maxY) {
+          maxY = y;
+        }
+      }
+
+      const range = maxY - minY;
+      const red = new THREE.Color("red");
+      const green = new THREE.Color("green");
+      const blue = new THREE.Color("blue");
+
+      for (var i = 0; i < numPoints; i++) {
+        const y = points.geometry.attributes.position.array[i * 3 + 1];
+        if (y < minY + 0.333 * range) {
+          colors.push(red.r, red.g, red.b);
+        } else if (y < minY + 0.666 * range) {
+          colors.push(green.r, green.g, green.b);
+        } else {
+          colors.push(blue.r, blue.g, blue.b);
+        }
+      }
+      points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+      points.material = new THREE.PointsMaterial( { size: 0.003, vertexColors: true } )
       points.geometry.center();
       points.geometry.rotateX(Math.PI);
       this.scene.add(points);
