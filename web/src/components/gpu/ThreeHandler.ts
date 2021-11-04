@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import {RenderType} from "./RenderType"
 
 export interface IGraphicsHandler {
-  renderPCD(domElement: HTMLElement, pcdFilename: String): void;
+  renderPCD(domElement: HTMLElement, pcdFilename: String, mode: RenderType): void;
   resizeRenderer(width: number, height: number): void;
 }
 
@@ -43,7 +44,7 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer.setSize(width, height);
   }
 
-  renderPCD(domElem: HTMLElement, pcdFilename: String): void {
+  renderPCD(domElem: HTMLElement, pcdFilename: String, mode: RenderType): void {
     // Mount the GPU view to the HTML
     const children = domElem.children;
     if (children.length > 0) {
@@ -51,12 +52,33 @@ export class ThreeHandler implements IGraphicsHandler {
     }
     domElem.appendChild(this.renderer.domElement);
 
-    this.loadPCD(pcdFilename);
+    switch(mode){
+      case RenderType.PCD:{
+        this.loadPCD(pcdFilename);
+        break;
+      }
+      case RenderType.HM:{
+        this.loadHM(pcdFilename);
+        break;
+      }
+    }
 
     this.renderScene();
   }
 
-  private loadPCD(pcdFilename: String) {
+
+
+  private loadPCD(pcdFilename : String){
+    const loader = new PCDLoader();
+    loader.load(`/online.pcd`, points => {
+      points.geometry.center();
+      points.geometry.rotateX(Math.PI);
+      this.scene.add(points);
+      this.renderScene();
+    });
+  }
+
+  private loadHM(hmFilename: String) {
     const loader = new PCDLoader();
     loader.load(`/online.pcd`, points => {
       console.log(points.geometry.attributes.position);
@@ -83,8 +105,8 @@ export class ThreeHandler implements IGraphicsHandler {
       const green = new THREE.Color("green");
       const blue = new THREE.Color("blue");
 
-      for (var i = 0; i < numPoints; i++) {
-        const y = points.geometry.attributes.position.array[i * 3 + 1];
+      for (var j = 0; j < numPoints; j++) {
+        const y = points.geometry.attributes.position.array[j * 3 + 1];
         if (y < minY + 0.333 * range) {
           colors.push(red.r, red.g, red.b);
         } else if (y < minY + 0.666 * range) {

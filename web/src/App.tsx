@@ -5,6 +5,8 @@ import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
 
+import {RenderType} from "./components/gpu/RenderType"
+
 export const EnableGPUContext = createContext(true);
 
 const dummyGraphicsHandler: IGraphicsHandler = {
@@ -26,10 +28,14 @@ function App() {
     setPcd(pcdName);
   };
 
-  const [showPointCloud, setShowPointCloud] = useState(true);
+  const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
 
-  const handleClick = () => {
-    setShowPointCloud(!showPointCloud);
+  const ClickPCD = () => {
+    setPointCloudType(RenderType.PCD);
+  };
+
+  const ClickHM = () => {
+    setPointCloudType(RenderType.HM);
   };
 
   const cssCenter = {
@@ -48,19 +54,19 @@ function App() {
     <div className="App" style={cssCenter}>
       <h1>Welcome to Daedalus!</h1>
       <div>
-        <button onClick={handleClick}>Show Point Cloud</button>
-        <button>Show Heat Map</button>
+        <button onClick={ClickPCD}>Show Point Cloud</button>
+        <button onClick={ClickHM}>Show Heat Map</button>
         <button>Show 2D Map</button>
       </div>
       <PcdMenu pcd={pcd} setPcd={setPcd}/>
-      {showPointCloud && (
-        <GPUView
-          width={w}
-          height={h}
-          graphicsHandler={graphicsHandler}
-          pcdFilename={pcd}
-        />
-      )}
+      <GPUView
+        width={w}
+        height={h}
+        graphicsHandler={graphicsHandler}
+        pcdFilename={pcd}
+        pcdRenderType = {pointCloudType}
+      />
+      
     </div>
   );
 }
