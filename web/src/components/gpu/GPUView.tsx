@@ -9,6 +9,7 @@ type GPUViewProps = {
   graphicsHandler: IGraphicsHandler;
   pcdFilename: string;
   pcdRenderType: RenderType
+  pcdPointSize: number
 };
 
 const GPUView = ({
@@ -16,7 +17,8 @@ const GPUView = ({
   height,
   graphicsHandler,
   pcdFilename,
-  pcdRenderType
+  pcdRenderType,
+  pcdPointSize
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
@@ -24,7 +26,7 @@ const GPUView = ({
 
   useEffect(() => {
     // Run the first time this component renders
-    graphicsHandler.renderPCD(elemRef.current!, pcdFilename, pcdRenderType);
+    graphicsHandler.renderPCD(elemRef.current!, pcdFilename, pcdRenderType, pcdPointSize);
     graphicsHandler.resizeRenderer(width, height);
   });
 

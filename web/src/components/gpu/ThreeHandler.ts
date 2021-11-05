@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {RenderType} from "./RenderType"
 
 export interface IGraphicsHandler {
-  renderPCD(domElement: HTMLElement, pcdFilename: String, mode: RenderType): void;
+  renderPCD(domElement: HTMLElement, pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
 }
 
@@ -44,7 +44,7 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer.setSize(width, height);
   }
 
-  renderPCD(domElem: HTMLElement, pcdFilename: string, mode: RenderType): void {
+  renderPCD(domElem: HTMLElement, pcdFilename: string, mode: RenderType, pcdPointSize: number): void {
     // Mount the GPU view to the HTML
     const children = domElem.children;
     if (children.length > 0) {
@@ -54,11 +54,11 @@ export class ThreeHandler implements IGraphicsHandler {
 
     switch(mode){
       case RenderType.PCD:{
-        this.loadPCD(pcdFilename, false);
+        this.loadPCD(pcdFilename, false, pcdPointSize);
         break;
       }
       case RenderType.HM:{
-        this.loadPCD(pcdFilename, true);
+        this.loadPCD(pcdFilename, true, pcdPointSize);
         break;
       }
     }
@@ -66,7 +66,7 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderScene();
   }
 
-  private loadPCD(pcdFilename: string, isHeatMap: boolean) {
+  private loadPCD(pcdFilename: string, isHeatMap: boolean, pcdPointSize: number) {
     const loader = new PCDLoader();
     loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
       if (isHeatMap) {
@@ -98,8 +98,8 @@ export class ThreeHandler implements IGraphicsHandler {
           colors.push(color.r, color.g, color.b);
         }
         points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-        points.material = new THREE.PointsMaterial( { size: 0.003, vertexColors: isHeatMap } )
       }
+      points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: isHeatMap } )
       points.geometry.center();
       points.geometry.rotateX(Math.PI);
       this.scene.add(points);

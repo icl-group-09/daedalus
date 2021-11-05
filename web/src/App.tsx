@@ -4,6 +4,7 @@ import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
+import Slider from 'react-input-slider';
 
 import {RenderType} from "./components/gpu/RenderType"
 
@@ -17,6 +18,7 @@ const dummyGraphicsHandler: IGraphicsHandler = {
 function App() {
   // These are here just for the demo. Will be removed
   const [pcd, setPcd] = useState("online");
+  const [pointSize, setPointSize] = useState(0.003);
   const [w, setW] = useState(800);
   const [h, setH] = useState(800);
   (window as any).funkyFunc = (x: number, y: number) => {
@@ -58,15 +60,26 @@ function App() {
         <button onClick={ClickHM}>Show Heat Map</button>
         <button>Show 2D Map</button>
       </div>
-      <PcdMenu pcd={pcd} setPcd={setPcd}/>
+      <div>
+        <PcdMenu pcd={pcd} setPcd={setPcd}/>
+          <Slider
+            axis="x"
+            xmax={0.01}
+            xstep={0.0005}
+            xmin={0.001}
+            x={pointSize}
+            onChange={({ x }) => setPointSize(x)}
+          />
+      </div>
+
       <GPUView
         width={w}
         height={h}
         graphicsHandler={graphicsHandler}
         pcdFilename={pcd}
         pcdRenderType = {pointCloudType}
+        pcdPointSize={pointSize}
       />
-      
     </div>
   );
 }
