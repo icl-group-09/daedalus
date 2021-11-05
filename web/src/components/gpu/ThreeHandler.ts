@@ -86,15 +86,12 @@ export class ThreeHandler implements IGraphicsHandler {
         }
 
         const range = maxY - minY;
-        const bottomColor = 0xFF0000;
-        const topColor = 0x0000FF;
 
         const colors = [];
         for (var j = 0; j < numPoints; j++) {
           const y = points.geometry.attributes.position.array[j * 3 + 1];
           const heightProp = (y - minY) / range;
-          const colorRep = heightProp * topColor + (1 - heightProp) * bottomColor;
-          const color = new THREE.Color(colorRep);
+          const color = new THREE.Color(1*(1-heightProp), 0, 1 * heightProp);
           colors.push(color.r, color.g, color.b);
         }
         points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
