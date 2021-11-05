@@ -70,7 +70,7 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private loadPCD(pcdFilename : String){
     const loader = new PCDLoader();
-    loader.load(`/online.pcd`, points => {
+    loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
       points.geometry.center();
       points.geometry.rotateX(Math.PI);
       this.scene.add(points);
@@ -80,12 +80,8 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private loadHM(hmFilename: String) {
     const loader = new PCDLoader();
-    loader.load(`/online.pcd`, points => {
-      console.log(points.geometry.attributes.position);
-      console.log(points.geometry.attributes.color);
-
+    loader.load(`/getPcd/${hmFilename}.pcd`, points => {
       const numPoints = points.geometry.attributes.position.count;
-      const colors = [];
       var minY = 1000000;
       var maxY = -1000000;
       for (var i = 0; i < numPoints; i++) {
@@ -101,19 +97,16 @@ export class ThreeHandler implements IGraphicsHandler {
       }
 
       const range = maxY - minY;
-      const red = new THREE.Color("red");
-      const green = new THREE.Color("green");
-      const blue = new THREE.Color("blue");
+      const bottomColor = 0xFF0000;
+      const topColor = 0x0000FF;
 
+      const colors = [];
       for (var j = 0; j < numPoints; j++) {
         const y = points.geometry.attributes.position.array[j * 3 + 1];
-        if (y < minY + 0.333 * range) {
-          colors.push(red.r, red.g, red.b);
-        } else if (y < minY + 0.666 * range) {
-          colors.push(green.r, green.g, green.b);
-        } else {
-          colors.push(blue.r, blue.g, blue.b);
-        }
+        const heightProp = (y - minY) / range;
+        const colorRep = heightProp * topColor + (1 - heightProp) * bottomColor;
+        const color = new THREE.Color(colorRep);
+        colors.push(color.r, color.g, color.b);
       }
       points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
       points.material = new THREE.PointsMaterial( { size: 0.003, vertexColors: true } )
