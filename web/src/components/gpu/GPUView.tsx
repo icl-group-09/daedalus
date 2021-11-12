@@ -1,7 +1,8 @@
 import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
 import { useEffect, useRef } from "react";
-import {RenderType} from "./RenderType"
+import {RenderType} from "./RenderType";
+import "./GPUView.css";
 
 type GPUViewProps = {
   width: number;

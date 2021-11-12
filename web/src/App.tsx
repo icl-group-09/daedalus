@@ -15,12 +15,20 @@ const dummyGraphicsHandler: IGraphicsHandler = {
   resizeRenderer: (width: number, height: number) => {},
 };
 
+function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>, 
+  setH: React.Dispatch<React.SetStateAction<number>>) {
+  setW(window.innerWidth);
+  setH(window.innerHeight);
+}
+
 function App() {
   // These are here just for the demo. Will be removed
   const [pcd, setPcd] = useState("online");
   const [pointSize, setPointSize] = useState(0.003);
-  const [w, setW] = useState(800);
-  const [h, setH] = useState(800);
+  const [w, setW] = useState(window.innerWidth);
+  const [h, setH] = useState(window.innerHeight);
+  window.addEventListener("resize", () => onWindowResize(setW, setH), false);
+
   (window as any).funkyFunc = (x: number, y: number) => {
     setW(x);
     setH(y);
@@ -64,7 +72,7 @@ function App() {
         <PcdMenu pcd={pcd} setPcd={setPcd}/>
           <Slider
             axis="x"
-            xmax={0.01}
+            xmax={0.1}
             xstep={0.0005}
             xmin={0.001}
             x={pointSize}
