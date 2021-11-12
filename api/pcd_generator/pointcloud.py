@@ -51,8 +51,8 @@ with open(pcd_generator_dir + "/result.pcd", "w", encoding="UTF-8") as pcd:
             # Send points not correctly mapped to the back
             if depth == 0:
                 depth = max_val
-            pcd.write(str(x/1000) + " " + str(y/1000) + " " +
-                      str(depth/1000) + " " + str(hex_color) + "\n")
+            pcd.write(str(x/1000) + " " + str(depth/1000) + " " +
+                      str(y/1000) + " " + str(hex_color) + "\n")
 
 
 print("Finished Generating")

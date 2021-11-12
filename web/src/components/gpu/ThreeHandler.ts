@@ -96,7 +96,7 @@ export class ThreeHandler implements IGraphicsHandler {
         }
         points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
       }
-      points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: isHeatMap } )
+      points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: true } )
       points.geometry.center();
       points.geometry.rotateX(Math.PI);
       this.scene.add(points);
