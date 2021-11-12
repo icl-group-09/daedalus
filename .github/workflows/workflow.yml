@@ -26,8 +26,9 @@ jobs:
           cd api
           pip install pipenv
           pipenv install 
-          pipenv run pyright $(git ls-files '*.py')
-          pipenv run pylint $(git ls-files '*.py')
+          pipenv shell
+          pyright $(git ls-files '*.py')
+          pylint $(git ls-files '*.py')
 
       - name: Run the Tests
         run: |
