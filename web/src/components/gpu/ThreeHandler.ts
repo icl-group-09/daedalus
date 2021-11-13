@@ -9,12 +9,16 @@ export interface IGraphicsHandler {
 }
 
 export class ThreeHandler implements IGraphicsHandler {
-  private readonly renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
+  private renderer: THREE.WebGLRenderer;
   private readonly scene: THREE.Scene = new THREE.Scene();
   private camera: THREE.PerspectiveCamera;
+  private currentFile?: String;
+  private points?: THREE.Points<THREE.BufferGeometry, THREE.Material | THREE.Material[]>
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, canvas: HTMLCanvasElement) {
+	  console.log("I'm constructed!")
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
+	this.renderer = new THREE.WebGLRenderer({canvas: canvas});
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
@@ -45,13 +49,6 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   renderPCD(domElem: HTMLElement, pcdFilename: string, mode: RenderType, pcdPointSize: number): void {
-    // Mount the GPU view to the HTML
-    const children = domElem.children;
-    if (children.length > 0) {
-      domElem.removeChild(children[children.length - 1]);
-    }
-    domElem.appendChild(this.renderer.domElement);
-
     switch(mode){
       case RenderType.PCD:{
         this.loadPCD(pcdFilename, false, pcdPointSize);
@@ -67,41 +64,62 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   private loadPCD(pcdFilename: string, isHeatMap: boolean, pcdPointSize: number) {
-    const loader = new PCDLoader();
-    loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
-      if (isHeatMap) {
-        const numPoints = points.geometry.attributes.position.count;
-        var minY = 1000000;
-        var maxY = -1000000;
-        for (var i = 0; i < numPoints; i++) {
-          const y = points.geometry.attributes.position.array[i * 3 + 1];
+	console.log(this.currentFile)
+	console.log(pcdFilename)
+	if (pcdFilename !== this.currentFile) {
+		this.currentFile = pcdFilename;
+		const loader = new PCDLoader();
+		loader.load("/resultm4.pcd", points => {
+		  this.points = points;
+		  this.setPointsProperties(points, pcdPointSize, isHeatMap)
+		  this.scene.add(points);
+		  this.renderScene();
+		});
+	} else {
+		console.log("AHH")
+		this.setPointsProperties(this.points!, pcdPointSize, isHeatMap);
+		this.renderScene();
+	}
+    
+  }
 
-          if (y < minY) {
-            minY = y;
-          }
+  private setPointsProperties(points: THREE.Points<THREE.BufferGeometry, THREE.Material | THREE.Material[]>, pcdPointSize: number, isHeadMap: boolean) {
+	if (isHeadMap) {
+		this.renderHeatMap(points)
+	}
+	points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: true } )
+	points.geometry.center();
+	points.geometry.rotateX(Math.PI);
+	//this.scene.add(points);
 
-          if (y > maxY) {
-            maxY = y;
-          }
-        }
+  }
 
-        const range = maxY - minY;
+  private renderHeatMap(points: THREE.Points<THREE.BufferGeometry, THREE.Material | THREE.Material[]>) {
+	const numPoints = points.geometry.attributes.position.count;
+	var minY = 1000000;
+	var maxY = -1000000;
+	for (var i = 0; i < numPoints; i++) {
+	  const y = points.geometry.attributes.position.array[i * 3 + 1];
 
-        const colors = [];
-        for (var j = 0; j < numPoints; j++) {
-          const y = points.geometry.attributes.position.array[j * 3 + 1];
-          const heightProp = (y - minY) / range;
-          const color = new THREE.Color(1*(1-heightProp), 0, 1 * heightProp);
-          colors.push(color.r, color.g, color.b);
-        }
-        points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-      }
-      points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: isHeatMap } )
-      points.geometry.center();
-      points.geometry.rotateX(Math.PI);
-      this.scene.add(points);
-      this.renderScene();
-    });
+	  if (y < minY) {
+		minY = y;
+	  }
+
+	  if (y > maxY) {
+		maxY = y;
+	  }
+	}
+
+	const range = maxY - minY;
+
+	const colors = [];
+	for (var j = 0; j < numPoints; j++) {
+	  const y = points.geometry.attributes.position.array[j * 3 + 1];
+	  const heightProp = (y - minY) / range;
+	  const color = new THREE.Color(1*(1-heightProp), 0, 1 * heightProp);
+	  colors.push(color.r, color.g, color.b);
+	}
+	points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   }
 
   private renderScene() {

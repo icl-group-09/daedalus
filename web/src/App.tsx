@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useRef } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
 import Slider from 'react-input-slider';
@@ -21,6 +21,7 @@ function App() {
   const [pointSize, setPointSize] = useState(0.003);
   const [w, setW] = useState(800);
   const [h, setH] = useState(800);
+ 
   (window as any).funkyFunc = (x: number, y: number) => {
     setW(x);
     setH(y);
@@ -48,9 +49,13 @@ function App() {
     justifyContent: "center",
   } as const;
 
-  const graphicsHandler = !useContext(EnableGPUContext)
-    ? dummyGraphicsHandler
-    : new ThreeHandler(w, h);
+  const canvas: HTMLCanvasElement = document.createElement("canvas");
+  const canvasRef = useRef<HTMLCanvasElement>(canvas);
+  const [graphicsHandler, setGraphicsHandler] = useState(new ThreeHandler(w, h, canvasRef.current!))
+
+//   const graphicsHandler = !useContext(EnableGPUContext)
+//     ? dummyGraphicsHandler
+//     : new ThreeHandler(w, h, canvasRef.current!);
 
   return (
     <div className="App" style={cssCenter}>
@@ -79,6 +84,7 @@ function App() {
         pcdFilename={pcd}
         pcdRenderType = {pointCloudType}
         pcdPointSize={pointSize}
+		canvas = {canvasRef.current!}
       />
     </div>
   );
