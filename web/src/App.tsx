@@ -4,14 +4,20 @@ import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import { useState, createContext, useContext, useRef } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
-import Slider from 'react-input-slider';
+import Slider from "react-input-slider";
 
-import {RenderType} from "./components/gpu/RenderType"
+import { RenderType } from "./components/gpu/RenderType";
 
 export const EnableGPUContext = createContext(true);
 
-const dummyGraphicsHandler: IGraphicsHandler = {
-  renderPCD: (domElement: HTMLElement, pcdFilename: String) => {},
+const INITAL_HEIGHT = 800;
+const INITAL_WIDTH = 800;
+
+const canvas: HTMLCanvasElement = document.createElement("canvas");
+const GRAPHICS_HANDLER = new ThreeHandler(INITAL_WIDTH, INITAL_HEIGHT, canvas);
+
+const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
+  renderPCD: (pcdFilename: String) => {},
   resizeRenderer: (width: number, height: number) => {},
 };
 
@@ -19,9 +25,9 @@ function App() {
   // These are here just for the demo. Will be removed
   const [pcd, setPcd] = useState("online");
   const [pointSize, setPointSize] = useState(0.003);
-  const [w, setW] = useState(800);
-  const [h, setH] = useState(800);
- 
+  const [w, setW] = useState(INITAL_WIDTH);
+  const [h, setH] = useState(INITAL_HEIGHT);
+
   (window as any).funkyFunc = (x: number, y: number) => {
     setW(x);
     setH(y);
@@ -41,6 +47,10 @@ function App() {
     setPointCloudType(RenderType.HM);
   };
 
+  const graphicsHandler = !useContext(EnableGPUContext)
+    ? DUMMY_GRAPHICS_HANDLER
+    : GRAPHICS_HANDLER;
+
   const cssCenter = {
     textAlign: "center",
     display: "flex",
@@ -48,14 +58,6 @@ function App() {
     alignItems: "center",
     justifyContent: "center",
   } as const;
-
-  const canvas: HTMLCanvasElement = document.createElement("canvas");
-  const canvasRef = useRef<HTMLCanvasElement>(canvas);
-  const [graphicsHandler, setGraphicsHandler] = useState(new ThreeHandler(w, h, canvasRef.current!))
-
-//   const graphicsHandler = !useContext(EnableGPUContext)
-//     ? dummyGraphicsHandler
-//     : new ThreeHandler(w, h, canvasRef.current!);
 
   return (
     <div className="App" style={cssCenter}>
@@ -66,15 +68,15 @@ function App() {
         <button>Show 2D Map</button>
       </div>
       <div>
-        <PcdMenu pcd={pcd} setPcd={setPcd}/>
-          <Slider
-            axis="x"
-            xmax={0.01}
-            xstep={0.0005}
-            xmin={0.001}
-            x={pointSize}
-            onChange={({ x }) => setPointSize(x)}
-          />
+        <PcdMenu pcd={pcd} setPcd={setPcd} />
+        <Slider
+          axis="x"
+          xmax={0.01}
+          xstep={0.0005}
+          xmin={0.001}
+          x={pointSize}
+          onChange={({ x }) => setPointSize(x)}
+        />
       </div>
 
       <GPUView
@@ -82,9 +84,9 @@ function App() {
         height={h}
         graphicsHandler={graphicsHandler}
         pcdFilename={pcd}
-        pcdRenderType = {pointCloudType}
+        pcdRenderType={pointCloudType}
         pcdPointSize={pointSize}
-		canvas = {canvasRef.current!}
+        canvas={canvas}
       />
     </div>
   );
