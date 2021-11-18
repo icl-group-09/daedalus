@@ -30,3 +30,10 @@ def get_pcd(filename: str) -> Response:
             os.remove(download_file_path)
         except FileNotFoundError:
             pass
+
+
+@bp.route("/", methods=["GET"])
+def default() -> Response:
+
+    return Response("Default", status=200)
+
