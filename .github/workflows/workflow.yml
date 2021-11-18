@@ -43,7 +43,7 @@ jobs:
 
   deploy-back:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-back
     environment:
       name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
