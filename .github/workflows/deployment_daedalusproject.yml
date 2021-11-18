@@ -59,7 +59,7 @@ jobs:
         with:
           app-name: 'daedalusproject'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_4bfb04b6b3af43efb35874aba846327a }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2967E8EA9C1C4074B29E1992D3F84454 }}
 
 
   # build-back:
