@@ -12,27 +12,82 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
+
   build-back:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - name: Set up Python version
+        uses: actions/setup-python@v1
         with:
-          python-version: "3.9"
-      - name: Lint
-        run: |
-          cd api
-          pip install pipenv
-          pipenv install 
-          pipenv run pyright $(git ls-files '*.py')
-          pipenv run pylint $(git ls-files '*.py')
+          python-version: '3.9'
 
-      - name: Run the Tests
+      - name: Create and start virtual environment
         run: |
           cd api
-          pip install pipenv
-          pipenv install 
-          pipenv run python -m unittest discover tests
+          python -m venv venv
+          source venv/bin/activate
+
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-app
+          path: |
+            cd api
+            . 
+            !venv/
+
+  deploy-back:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: python-app
+          path: .
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
+        with:
+          app-name: 'daedalusproject'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_4bfb04b6b3af43efb35874aba846327a }}
+
+
+  # build-back:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-python@v2
+  #       with:
+  #         python-version: "3.9"
+  #     - name: Lint
+  #       run: |
+  #         cd api
+  #         pip install pipenv
+  #         pipenv install 
+  #         pipenv run pyright $(git ls-files '*.py')
+  #         pipenv run pylint $(git ls-files '*.py')
+
+  #     - name: Run the Tests
+  #       run: |
+  #         cd api
+  #         pip install pipenv
+  #         pipenv install 
+  #         pipenv run python -m unittest discover tests
+
+
+
 
   build-front:
     runs-on: ubuntu-latest
