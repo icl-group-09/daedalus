@@ -12,8 +12,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
-
   build-back:
     runs-on: ubuntu-latest
     steps:
@@ -60,7 +58,7 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'daedalusproject'
-          slot-name: 'production'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_4bfb04b6b3af43efb35874aba846327a }}
 
 
