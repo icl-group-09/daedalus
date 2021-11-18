@@ -1,0 +1,5 @@
+flask
+azure-storage-blob
+pyright
+pylint
+python-dotenv
