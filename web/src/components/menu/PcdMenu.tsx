@@ -18,10 +18,24 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
 
   var pcdList = ["online", "Rf10", "frame_00023"];
 
+  const menuStyle = {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  } as const;
+
+  const menuColor = {
+    background: "white"
+  } as const;
+
   return (
+    <div style={menuStyle}>
+      <div style={menuColor}>
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">PCD</InputLabel>
+        {/* <InputLabel id="demo-simple-select-label">PCD</InputLabel> */}
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -39,6 +53,8 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
         </Select>
       </FormControl>
     </Box>
+    </div>
+    </div>
   );
 };
 export default PcdMenu;

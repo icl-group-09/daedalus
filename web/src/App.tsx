@@ -62,24 +62,33 @@ function App() {
     justifyContent: "center",
   } as const;
 
+  const cssControls = {
+    position: "absolute",
+    width: "100%",
+    left: "0px",
+    top: "0px",
+    color: "white"
+  } as const;
+
+
   return (
     <div className="App" style={cssCenter}>
-      <h1>Welcome to Daedalus!</h1>
-      <div>
-        <button onClick={ClickPCD}>Show Point Cloud</button>
-        <button onClick={ClickHM}>Show Heat Map</button>
-        <button>Show 2D Map</button>
-      </div>
-      <div>
-        <PcdMenu pcd={pcd} setPcd={setPcd}/>
-          <Slider
-            axis="x"
-            xmax={0.1}
-            xstep={0.0005}
-            xmin={0.001}
-            x={pointSize}
-            onChange={({ x }) => setPointSize(x)}
-            />
+      <div className = "controls" style={cssControls}>
+        <h1>Welcome to Daedalus!</h1>
+        <div>
+          <button onClick={ClickPCD}>Show Point Cloud</button>
+          <button onClick={ClickHM}>Show Heat Map</button>
+          <button>Show 2D Map</button>
+        </div>
+          <PcdMenu pcd={pcd} setPcd={setPcd}/>
+            <Slider
+              axis="x"
+              xmax={0.1}
+              xstep={0.0005}
+              xmin={0.001}
+              x={pointSize}
+              onChange={({ x }) => setPointSize(x)}
+              />
       </div>
 
       <GPUView
