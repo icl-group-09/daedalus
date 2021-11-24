@@ -132,11 +132,11 @@ export class ThreeHandler implements IGraphicsHandler {
     renderType: RenderType,
     pcdPointSize: number
   ): void {
-    if (this.points == undefined || pcdFilename !== this.currentFile) {
+    if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
-      // loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
-      loader.load("/" + pcdFilename + ".pcd", points => {
+      loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
+      // loader.load("/" + pcdFilename + ".pcd", points => {
         if (this.points !== undefined) {
           this.scene.remove(this.points);
         }

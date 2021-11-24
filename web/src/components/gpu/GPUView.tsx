@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
 import { useEffect } from "react";
 import {RenderType} from "./RenderType";
