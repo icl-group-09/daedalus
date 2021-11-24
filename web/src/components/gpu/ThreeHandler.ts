@@ -32,7 +32,6 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
     this.initCamera();
     this.initRenderer(width, height);
-   // this.initSkyBox();
     this.initControls();
     
     new THREE.CubeTextureLoader()
@@ -133,7 +132,7 @@ export class ThreeHandler implements IGraphicsHandler {
     renderType: RenderType,
     pcdPointSize: number
   ): void {
-    if (pcdFilename !== this.currentFile) {
+    if (this.points == undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
       // loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
@@ -143,13 +142,13 @@ export class ThreeHandler implements IGraphicsHandler {
         }
         this.points = points;
         this.originalPointsColors = points.geometry.getAttribute("color");
-        this.setPointsProperties(points, pcdPointSize, renderType);
         points.geometry.rotateX(Math.PI);
+        this.setPointsProperties(points, pcdPointSize, renderType);
         this.scene.add(points);
         this.renderScene();
       });
     } else {
-      this.setPointsProperties(this.points!, pcdPointSize, renderType);
+      this.setPointsProperties(this.points, pcdPointSize, renderType);
       this.renderScene();
     }
   }

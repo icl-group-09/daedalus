@@ -10,9 +10,6 @@ import { RenderType } from "./components/gpu/RenderType";
 
 export const EnableGPUContext = createContext(true);
 
-const INITAL_HEIGHT = 800;
-const INITAL_WIDTH = 800;
-
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
@@ -82,7 +79,7 @@ function App() {
             xmin={0.001}
             x={pointSize}
             onChange={({ x }) => setPointSize(x)}
-          />
+            />
       </div>
 
       <GPUView

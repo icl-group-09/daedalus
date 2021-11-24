@@ -26,13 +26,13 @@ const GPUView = ({
 
   useEffect(() => {
     // Run the first time this component renders
-    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-    graphicsHandler.resizeRenderer(width, height);
-
     const gpuFrame = document.getElementById("gpu-view-frame");
     if (gpuFrame?.children.length === 0) {
       gpuFrame.appendChild(canvas);
     }
+    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+    graphicsHandler.resizeRenderer(width, height);
+
   });
 
   return (
