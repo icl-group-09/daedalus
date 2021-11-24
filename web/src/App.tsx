@@ -19,6 +19,7 @@ const GRAPHICS_HANDLER = new ThreeHandler(INITAL_WIDTH, INITAL_HEIGHT, canvas);
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
   renderPCD: (pcdFilename: String) => {},
   resizeRenderer: (width: number, height: number) => {},
+  exportGLTF: () => {},
 };
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
     setPointCloudType(RenderType.HM);
   };
 
+
   const graphicsHandler = !useContext(EnableGPUContext)
     ? DUMMY_GRAPHICS_HANDLER
     : GRAPHICS_HANDLER;
@@ -71,7 +73,7 @@ function App() {
         <PcdMenu pcd={pcd} setPcd={setPcd} />
         <Slider
           axis="x"
-          xmax={0.01}
+          xmax={0.05}
           xstep={0.0005}
           xmin={0.001}
           x={pointSize}

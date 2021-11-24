@@ -24,6 +24,10 @@ const GPUView = ({
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
+  const exportGLTF = () => {
+    graphicsHandler.exportGLTF();
+  }
+
   useEffect(() => {
     // Run the first time this component renders
     graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
@@ -37,6 +41,7 @@ const GPUView = ({
 
   return (
     <div className="gpu-view" style={css}>
+      <button onClick={exportGLTF}>Save GLTF</button>
       <div id="gpu-view-frame"></div>
     </div>
   );

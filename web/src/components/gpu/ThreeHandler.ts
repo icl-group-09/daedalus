@@ -2,10 +2,12 @@ import * as THREE from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter"
 
 export interface IGraphicsHandler {
   renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
+  exportGLTF(): void;
 }
 
 export class ThreeHandler implements IGraphicsHandler {
@@ -61,8 +63,9 @@ export class ThreeHandler implements IGraphicsHandler {
     if (pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
-      loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
+      // loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
       // loader.load("/" + pcdFilename + ".pcd", points => {
+      loader.load("/noor2.pcd", points => {
         if (this.points !== undefined) {
           this.scene.remove(this.points);
         }
@@ -148,5 +151,13 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private renderScene() {
     this.renderer.render(this.scene, this.camera);
+  }
+
+  exportGLTF() {
+    const exporter = new GLTFExporter();
+    exporter.parse( this.scene, function (gltf) {
+      console.log( gltf )
+      // downloadJSON( gltf)
+    }, {})
   }
 }
