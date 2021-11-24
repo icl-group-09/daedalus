@@ -14,7 +14,6 @@ const INITAL_HEIGHT = 800;
 const INITAL_WIDTH = 800;
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
-const GRAPHICS_HANDLER = new ThreeHandler(INITAL_WIDTH, INITAL_HEIGHT, canvas);
 
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
   renderPCD: (pcdFilename: String) => {},
@@ -49,7 +48,7 @@ function App() {
 
   const graphicsHandler = !useContext(EnableGPUContext)
     ? DUMMY_GRAPHICS_HANDLER
-    : GRAPHICS_HANDLER;
+    : ThreeHandler.getInstance(w, h, canvas);
 
   const cssCenter = {
     textAlign: "center",

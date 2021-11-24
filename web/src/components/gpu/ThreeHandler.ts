@@ -21,12 +21,21 @@ export class ThreeHandler implements IGraphicsHandler {
     | THREE.BufferAttribute
     | THREE.InterleavedBufferAttribute;
 
-  public constructor(width: number, height: number, canvas: HTMLCanvasElement) {
+  private static instance: ThreeHandler;
+
+  private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
+  }
+
+  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
+    if (!ThreeHandler.instance) {
+      ThreeHandler.instance = new ThreeHandler(width, height, canvas);
+    }
+    return ThreeHandler.instance;
   }
 
   private initCamera() {
