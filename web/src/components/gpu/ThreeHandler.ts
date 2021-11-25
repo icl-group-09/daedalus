@@ -1,10 +1,12 @@
 import * as THREE from "three";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter"
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
 
 export interface IGraphicsHandler {
-  renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): string;
+  uploadAsToGTLF(pcdFilename: string, mode: RenderType, pcdPointSize: number, cb: (path: string) => void): void;
+  renderPCD(pcdFilename: string, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
 }
 
@@ -127,16 +129,11 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer.setSize(width, height);
   }
 
-  renderPCD(
-    pcdFilename: string,
-    renderType: RenderType,
-    pcdPointSize: number
-  ): string {
+  private createModelAnd(pcdFilename: string, renderType: RenderType, pcdPointSize: number, cb: () => void) {
     if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
       loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
-      // loader.load("/" + pcdFilename + ".pcd", points => {
         if (this.points !== undefined) {
           this.scene.remove(this.points);
         }
@@ -144,14 +141,35 @@ export class ThreeHandler implements IGraphicsHandler {
         this.originalPointsColors = points.geometry.getAttribute("color");
         points.geometry.rotateX(Math.PI);
         this.setPointsProperties(points, pcdPointSize, renderType);
-        this.scene.add(points);
-        this.renderScene();
+        cb();
       });
     } else {
       this.setPointsProperties(this.points, pcdPointSize, renderType);
       this.renderScene();
     }
-    return "torus.gltf"
+  }
+
+  uploadAsToGTLF(pcdFilename: string, mode: RenderType, pcdPointSize: number, cb: (path: string) => void): void {
+    const parse = () => {
+      // Get string gltf
+      const exporter = new GLTFExporter();
+      exporter.parse(this.scene, (gltf) => {
+        console.log(gltf); // TODO upload to server
+        
+        // Return / set path
+        cb("torus.gltf");
+      }, {})
+    }
+    this.createModelAnd(pcdFilename, mode, pcdPointSize, parse);
+  }
+
+  renderPCD(
+    pcdFilename: string,
+    renderType: RenderType,
+    pcdPointSize: number
+  ): void {
+    const renderCB = () => this.renderScene();
+    this.createModelAnd(pcdFilename, renderType, pcdPointSize, renderCB);
   }
 
   private setPointsProperties(

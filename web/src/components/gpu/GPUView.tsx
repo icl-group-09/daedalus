@@ -25,16 +25,18 @@ const GPUView = ({
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
+  const updateGLTFAttr = (path: string) => {
+    document.getElementById("ar-model")?.setAttribute("gltf-model", path);
+  }
 
   useEffect(() => {
     // Run the first time this component renders
      if (gpuViewRef.current!.children.length === 0) {
        gpuViewRef.current!.appendChild(canvas);
      }
-
-     const gltfPath = graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-     graphicsHandler.resizeRenderer(width, height);
-     document.getElementById("ar-model")?.setAttribute("gltf-model", gltfPath)
+     graphicsHandler.uploadAsToGTLF(pcdFilename, pcdRenderType, pcdPointSize, updateGLTFAttr);
+     // graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+     // graphicsHandler.resizeRenderer(width, height);
   });
 
   return (
