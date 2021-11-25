@@ -5,6 +5,12 @@ import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
 import Slider from "react-input-slider";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 import { RenderType } from "./components/gpu/RenderType";
 
@@ -24,82 +30,132 @@ function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>,
 }
 
 function App() {
-  // These are here just for the demo. Will be removed
-  const [pcd, setPcd] = useState("online");
-  const [pointSize, setPointSize] = useState(0.003);
-  const [w, setW] = useState(window.innerWidth);
-  const [h, setH] = useState(window.innerHeight);
-  window.addEventListener("resize", () => onWindowResize(setW, setH), false);
-
-  (window as any).funkyFunc = (x: number, y: number) => {
-    setW(x);
-    setH(y);
-  };
-
-  (window as any).setPcd = (pcdName: string) => {
-    setPcd(pcdName);
-  };
-
-  const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
-
-  const ClickPCD = () => {
-    setPointCloudType(RenderType.PCD);
-  };
-
-  const ClickHM = () => {
-    setPointCloudType(RenderType.HM);
-  };
-
-  const graphicsHandler = !useContext(EnableGPUContext)
-    ? DUMMY_GRAPHICS_HANDLER
-    : ThreeHandler.getInstance(w, h, canvas);
-
-  const cssCenter = {
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  } as const;
-
-  const cssControls = {
-    position: "absolute",
-    width: "100%",
-    left: "0px",
-    top: "0px",
-    color: "white"
-  } as const;
-
-
   return (
-    <div className="App" style={cssCenter}>
-      <div className = "controls" style={cssControls}>
-        <h1>Welcome to Daedalus!</h1>
-        <div>
-          <button onClick={ClickPCD}>Show Point Cloud</button>
-          <button onClick={ClickHM}>Show Heat Map</button>
-          <button>Show 2D Map</button>
-        </div>
-          <PcdMenu pcd={pcd} setPcd={setPcd}/>
-            <Slider
-              axis="x"
-              xmax={0.1}
-              xstep={0.0005}
-              xmin={0.001}
-              x={pointSize}
-              onChange={({ x }) => setPointSize(x)}
-              />
-      </div>
+    <Router>
+      <div>
+        <ul>
+          <li>
+            <Link to="/">Welcome</Link>
+          </li>
+          <li>
+            <Link to="/upload">Upload</Link>
+          </li>
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+        </ul>
 
-      <GPUView
-        width={w}
-        height={h}
-        graphicsHandler={graphicsHandler}
-        pcdFilename={pcd}
-        pcdRenderType={pointCloudType}
-        pcdPointSize={pointSize}
-        canvas={canvas}
-      />
+        <hr />
+
+        {/*
+          A <Switch> looks through all its children <Route>
+          elements and renders the first one whose path
+          matches the current URL. Use a <Switch> any time
+          you have multiple routes, but you want only one
+          of them to render at a time
+        */}
+        <Switch>
+          <Route exact path="/">
+            <Welcome />
+          </Route>
+          <Route path="/upload">
+            <Upload />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+
+
+function Welcome(){
+
+   // These are here just for the demo. Will be removed
+   const [pcd, setPcd] = useState("online");
+   const [pointSize, setPointSize] = useState(0.003);
+   const [w, setW] = useState(window.innerWidth);
+   const [h, setH] = useState(window.innerHeight);
+   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
+ 
+   (window as any).funkyFunc = (x: number, y: number) => {
+     setW(x);
+     setH(y);
+   };
+ 
+   (window as any).setPcd = (pcdName: string) => {
+     setPcd(pcdName);
+   };
+ 
+   const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
+ 
+   const ClickPCD = () => {
+     setPointCloudType(RenderType.PCD);
+   };
+ 
+   const ClickHM = () => {
+     setPointCloudType(RenderType.HM);
+   };
+ 
+   const graphicsHandler = !useContext(EnableGPUContext)
+     ? DUMMY_GRAPHICS_HANDLER
+     : ThreeHandler.getInstance(w, h, canvas);
+ 
+   const cssCenter = {
+     textAlign: "center",
+     display: "flex",
+     flexDirection: "column",
+     alignItems: "center",
+     justifyContent: "center",
+   } as const;
+ 
+   const cssControls = {
+     position: "absolute",
+     width: "100%",
+     left: "0px",
+     top: "0px",
+     color: "white"
+   } as const;
+ 
+ 
+   return (
+ 
+     <div className="App" style={cssCenter}>
+       <div className = "controls" style={cssControls}>
+         <h1>Welcome to Daedalus!</h1>
+         <div>
+           <button onClick={ClickPCD}>Show Point Cloud</button>
+           <button onClick={ClickHM}>Show Heat Map</button>
+           <button>Show 2D Map</button>
+         </div>
+           <PcdMenu pcd={pcd} setPcd={setPcd}/>
+             <Slider
+               axis="x"
+               xmax={0.1}
+               xstep={0.0005}
+               xmin={0.001}
+               x={pointSize}
+               onChange={({ x }) => setPointSize(x)}
+               />
+       </div>
+ 
+       <GPUView
+         width={w}
+         height={h}
+         graphicsHandler={graphicsHandler}
+         pcdFilename={pcd}
+         pcdRenderType={pointCloudType}
+         pcdPointSize={pointSize}
+         canvas={canvas}
+       />
+     </div>
+   );
+
+}
+function Upload(){
+  return (
+    <div>
+      <h2>Upload</h2>
     </div>
   );
 }
