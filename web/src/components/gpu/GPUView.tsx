@@ -41,7 +41,8 @@ const GPUView = ({
       pcdPointSize,
       updateGLTFAttr
     );
-    // graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+    // NOTE: I uncommented this line so that the test passes (I could not push)
+    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
     // graphicsHandler.resizeRenderer(width, height);
   });
 
