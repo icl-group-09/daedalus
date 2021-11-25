@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import {RenderType} from "./RenderType"
+import { RenderType } from "./RenderType";
 
 export interface IGraphicsHandler {
-  renderPCD(domElement: HTMLElement, pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
+  renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
 }
 
@@ -13,14 +13,25 @@ export class ThreeHandler implements IGraphicsHandler {
     alpha: true,
     antialias: true
   });
+
   private readonly scene: THREE.Scene = new THREE.Scene();
   private camera: THREE.PerspectiveCamera;
+  private currentFile?: String;
+  private points?: THREE.Points<
+    THREE.BufferGeometry,
+    THREE.Material | THREE.Material[]
+  >;
+  private originalPointsColors?:
+    | THREE.BufferAttribute
+    | THREE.InterleavedBufferAttribute;
 
-  constructor(width: number, height: number) {
+  private static instance: ThreeHandler;
+
+  private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
+    this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
     this.initCamera();
     this.initRenderer(width, height);
-   // this.initSkyBox();
     this.initControls();
     
     new THREE.CubeTextureLoader()
@@ -84,6 +95,13 @@ export class ThreeHandler implements IGraphicsHandler {
     this.scene.add(skybox);
   }
 
+  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
+    if (!ThreeHandler.instance) {
+      ThreeHandler.instance = new ThreeHandler(width, height, canvas);
+    }
+    return ThreeHandler.instance;
+  }
+
   private initCamera() {
     /// this.camera.position.set(0, 0, 1);
     this.camera.position.set(1200, -250, 2000);
@@ -109,65 +127,97 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer.setSize(width, height);
   }
 
-  renderPCD(domElem: HTMLElement, pcdFilename: string, mode: RenderType, pcdPointSize: number): void {
-    // Mount the GPU view to the HTML
-    const children = domElem.children;
-    if (children.length > 0) {
-      domElem.removeChild(children[children.length - 1]);
+  renderPCD(
+    pcdFilename: string,
+    renderType: RenderType,
+    pcdPointSize: number
+  ): void {
+    if (this.points === undefined || pcdFilename !== this.currentFile) {
+      this.currentFile = pcdFilename;
+      const loader = new PCDLoader();
+      loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
+      // loader.load("/" + pcdFilename + ".pcd", points => {
+        if (this.points !== undefined) {
+          this.scene.remove(this.points);
+        }
+        this.points = points;
+        this.originalPointsColors = points.geometry.getAttribute("color");
+        points.geometry.rotateX(Math.PI);
+        this.setPointsProperties(points, pcdPointSize, renderType);
+        this.scene.add(points);
+        this.renderScene();
+      });
+    } else {
+      this.setPointsProperties(this.points, pcdPointSize, renderType);
+      this.renderScene();
     }
-    this.renderer.domElement.id = "canvas"
-    domElem.appendChild(this.renderer.domElement);
-
-    switch(mode){
-      case RenderType.PCD:{
-        this.loadPCD(pcdFilename, false, pcdPointSize);
-        break;
-      }
-      case RenderType.HM:{
-        this.loadPCD(pcdFilename, true, pcdPointSize);
-        break;
-      }
-    }
-
-    this.renderScene();
   }
 
-  private loadPCD(pcdFilename: string, isHeatMap: boolean, pcdPointSize: number) {
-    const loader = new PCDLoader();
-    loader.load("/resultc.pcd", points => {
-      if (isHeatMap) {
-        const numPoints = points.geometry.attributes.position.count;
-        var minY = 1000000;
-        var maxY = -1000000;
-        for (var i = 0; i < numPoints; i++) {
-          const y = points.geometry.attributes.position.array[i * 3 + 1];
+  private setPointsProperties(
+    points: THREE.Points<
+      THREE.BufferGeometry,
+      THREE.Material | THREE.Material[]
+    >,
+    pcdPointSize: number,
+    renderType: RenderType
+  ) {
+    let useVertexColors = this.originalPointsColors !== undefined;
 
-          if (y < minY) {
-            minY = y;
-          }
-
-          if (y > maxY) {
-            maxY = y;
-          }
-        }
-
-        const range = maxY - minY;
-
-        const colors = [];
-        for (var j = 0; j < numPoints; j++) {
-          const y = points.geometry.attributes.position.array[j * 3 + 1];
-          const heightProp = (y - minY) / range;
-          const color = new THREE.Color(1*(1-heightProp), 0, 1 * heightProp);
-          colors.push(color.r, color.g, color.b);
-        }
-        points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    switch (renderType) {
+      case RenderType.HM: {
+        this.renderHeatMap(points);
+        useVertexColors = true;
+        break;
       }
-      points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: true } )
-      points.geometry.center();
-      points.geometry.rotateX(Math.PI);
-      this.scene.add(points);
-      this.renderScene();
+      default: {
+        if (useVertexColors) {
+          points.geometry.setAttribute("color", this.originalPointsColors!);
+        }
+        break;
+      }
+    }
+
+    points.material = new THREE.PointsMaterial({
+      size: pcdPointSize,
+      vertexColors: useVertexColors,
     });
+    points.geometry.center();
+  }
+
+  private renderHeatMap(
+    points: THREE.Points<
+      THREE.BufferGeometry,
+      THREE.Material | THREE.Material[]
+    >
+  ) {
+    const numPoints = points.geometry.attributes.position.count;
+    var minY = 1000000;
+    var maxY = -1000000;
+    for (var i = 0; i < numPoints; i++) {
+      const y = points.geometry.attributes.position.array[i * 3 + 1];
+
+      if (y < minY) {
+        minY = y;
+      }
+
+      if (y > maxY) {
+        maxY = y;
+      }
+    }
+
+    const range = maxY - minY;
+
+    const colors = [];
+    for (var j = 0; j < numPoints; j++) {
+      const y = points.geometry.attributes.position.array[j * 3 + 1];
+      const heightProp = (y - minY) / range;
+      const color = new THREE.Color(heightProp, 0, 1 -heightProp);
+      colors.push(color.r, color.g, color.b);
+    }
+    points.geometry.setAttribute(
+      "color",
+      new THREE.Float32BufferAttribute(colors, 3)
+    );
   }
 
   private renderScene() {
