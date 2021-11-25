@@ -6,6 +6,7 @@ import { RenderType } from "./RenderType";
 
 test("Expect inital GPUView to call renderPCD on mount", () => {
   const mockGraphicsHandler: IGraphicsHandler = {
+    uploadAsToGTLF: jest.fn(() => {}),
     renderPCD: jest.fn((pcdFilename: String) => {}),
     resizeRenderer: jest.fn((width: number, height: number) => {}),
   };
