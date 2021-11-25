@@ -29,23 +29,31 @@ function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>,
   setH(window.innerHeight);
 }
 
+
+
 function App() {
   return (
     <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Welcome</Link>
-          </li>
-          <li>
-            <Link to="/upload">Upload</Link>
-          </li>
-        </ul>
-        <hr />
-        <Routes>
-          <Route path="/" element={<Welcome/>} />
-          <Route path="/upload" element={<Upload/>} />
-        </Routes>
+      <div className = "App">
+
+        <div>
+          <ul>
+            <li>
+              <Link to="/">Welcome</Link>
+            </li>
+            <li>
+              <Link to="/upload">Upload</Link>
+            </li>
+          </ul>
+          </div>
+     
+
+        <div className = "content">
+          <Routes>
+            <Route path="/" element={<Welcome/>} />
+            <Route path="/upload" element={<Upload/>} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
@@ -136,6 +144,8 @@ function Welcome(){
    );
 
 }
+
+
 function Upload(){
   return (
     <div>
