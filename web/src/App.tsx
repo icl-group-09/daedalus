@@ -7,7 +7,7 @@ import PcdMenu from "./components/menu/PcdMenu";
 import Slider from "react-input-slider";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link
 } from "react-router-dom";
@@ -40,28 +40,12 @@ function App() {
           <li>
             <Link to="/upload">Upload</Link>
           </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
         </ul>
-
         <hr />
-
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
-        <Switch>
-          <Route exact path="/">
-            <Welcome />
-          </Route>
-          <Route path="/upload">
-            <Upload />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Welcome/>} />
+          <Route path="/upload" element={<Upload/>} />
+        </Routes>
       </div>
     </Router>
   );
