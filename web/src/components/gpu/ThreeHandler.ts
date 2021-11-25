@@ -1,11 +1,16 @@
 import * as THREE from "three";
-import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter"
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
 
 export interface IGraphicsHandler {
-  uploadAsToGTLF(pcdFilename: string, mode: RenderType, pcdPointSize: number, cb: (path: string) => void): void;
+  uploadAsToGTLF(
+    pcdFilename: string,
+    mode: RenderType,
+    pcdPointSize: number,
+    cb: (path: string) => void
+  ): void;
   renderPCD(pcdFilename: string, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
 }
@@ -13,7 +18,7 @@ export interface IGraphicsHandler {
 export class ThreeHandler implements IGraphicsHandler {
   private readonly renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
     alpha: true,
-    antialias: true
+    antialias: true,
   });
 
   private readonly scene: THREE.Scene = new THREE.Scene();
@@ -29,43 +34,45 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private static instance: ThreeHandler;
 
-  private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
+  private constructor(
+    width: number,
+    height: number,
+    canvas: HTMLCanvasElement
+  ) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
-    
-    new THREE.CubeTextureLoader()
-    .setPath('/')
-    .load(
-        // urls of images used in the cube texture
-        [
-            'purplenebula_ft.png',
-            'purplenebula_bk.png',
-            'purplenebula_lf.png',
-            'purplenebula_rt.png',
-            'purplenebula_up.png',
-            'purplenebula_dn.png'
-        ],
-        // what to do when loading is over
-         (cubeTexture) => {
-            // Geometry
-            const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
-            // Material
-            var material = new THREE.MeshBasicMaterial({
-                // CUBE TEXTURE can be used with
-                // the environment map property of
-                // a material.
-                envMap: cubeTexture
-            });
-            // Mesh
-            var mesh = new THREE.Mesh(skybox, material);
-            this.scene.add(mesh);
-            // CUBE TEXTURE is also an option for a background
-            this.scene.background = cubeTexture;
-            this.renderer.render(this.scene, this.camera);
-        }
+
+    new THREE.CubeTextureLoader().setPath("/").load(
+      // urls of images used in the cube texture
+      [
+        "purplenebula_ft.png",
+        "purplenebula_bk.png",
+        "purplenebula_lf.png",
+        "purplenebula_rt.png",
+        "purplenebula_up.png",
+        "purplenebula_dn.png",
+      ],
+      // what to do when loading is over
+      cubeTexture => {
+        // Geometry
+        const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
+        // Material
+        var material = new THREE.MeshBasicMaterial({
+          // CUBE TEXTURE can be used with
+          // the environment map property of
+          // a material.
+          envMap: cubeTexture,
+        });
+        // Mesh
+        var mesh = new THREE.Mesh(skybox, material);
+        this.scene.add(mesh);
+        // CUBE TEXTURE is also an option for a background
+        this.scene.background = cubeTexture;
+        this.renderer.render(this.scene, this.camera);
+      }
     );
   }
 
@@ -84,7 +91,10 @@ export class ThreeHandler implements IGraphicsHandler {
     const skyboxImagepaths = this.createPathStrings(filename);
     const materialArray = skyboxImagepaths.map(image => {
       let texture = new THREE.TextureLoader().load(image);
-      return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide }); // <---
+      return new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide,
+      }); // <---
     });
     return materialArray;
   }
@@ -97,7 +107,11 @@ export class ThreeHandler implements IGraphicsHandler {
     this.scene.add(skybox);
   }
 
-  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
+  public static getInstance(
+    width: number,
+    height: number,
+    canvas: HTMLCanvasElement
+  ): ThreeHandler {
     if (!ThreeHandler.instance) {
       ThreeHandler.instance = new ThreeHandler(width, height, canvas);
     }
@@ -129,10 +143,16 @@ export class ThreeHandler implements IGraphicsHandler {
     this.renderer.setSize(width, height);
   }
 
-  private createModelAnd(pcdFilename: string, renderType: RenderType, pcdPointSize: number, cb: () => void) {
+  private createModelAnd(
+    pcdFilename: string,
+    renderType: RenderType,
+    pcdPointSize: number,
+    cb: () => void
+  ) {
     if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
+
       loader.load(`/getPcd/${pcdFilename}.pcd`, points => {
         if (this.points !== undefined) {
           this.scene.remove(this.points);
@@ -149,17 +169,41 @@ export class ThreeHandler implements IGraphicsHandler {
     }
   }
 
-  uploadAsToGTLF(pcdFilename: string, mode: RenderType, pcdPointSize: number, cb: (path: string) => void): void {
+  uploadAsToGTLF(
+    pcdFilename: string,
+    mode: RenderType,
+    pcdPointSize: number,
+    cb: (path: string) => void
+  ): void {
     const parse = () => {
       // Get string gltf
       const exporter = new GLTFExporter();
-      exporter.parse(this.scene, (gltf) => {
-        console.log(gltf); // TODO upload to server
-        
-        // Return / set path
-        cb("torus.gltf");
-      }, {})
-    }
+      exporter.parse(
+        this.scene,
+        gltf => {
+          // fetch("/")
+
+          fetch("/upload_parsed", {
+            method: "POST",
+            // TODO: CORS here will have to be investigated when we do deployment
+            mode: "cors", // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Note: here we want to stringify the gltf before we stringify the whole payload
+            body: JSON.stringify({ rawGLTF: JSON.stringify(gltf) }),
+          })
+            .then(res => res.json())
+            .then(data => cb(data.path));
+
+          // Return / set path
+          // cb("torus.gltf");
+        },
+        {}
+      );
+    };
     this.createModelAnd(pcdFilename, mode, pcdPointSize, parse);
   }
 
@@ -230,7 +274,7 @@ export class ThreeHandler implements IGraphicsHandler {
     for (var j = 0; j < numPoints; j++) {
       const y = points.geometry.attributes.position.array[j * 3 + 1];
       const heightProp = (y - minY) / range;
-      const color = new THREE.Color(heightProp, 0, 1 -heightProp);
+      const color = new THREE.Color(heightProp, 0, 1 - heightProp);
       colors.push(color.r, color.g, color.b);
     }
     points.geometry.setAttribute(

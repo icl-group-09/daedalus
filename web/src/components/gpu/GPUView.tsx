@@ -1,7 +1,7 @@
 import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
 import { useEffect } from "react";
-import {RenderType} from "./RenderType";
+import { RenderType } from "./RenderType";
 
 type GPUViewProps = {
   width: number;
@@ -26,17 +26,23 @@ const GPUView = ({
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
   const updateGLTFAttr = (path: string) => {
+    console.log("I was called with path: ", path);
     document.getElementById("ar-model")?.setAttribute("gltf-model", path);
-  }
+  };
 
   useEffect(() => {
     // Run the first time this component renders
-     if (gpuViewRef.current!.children.length === 0) {
-       gpuViewRef.current!.appendChild(canvas);
-     }
-     graphicsHandler.uploadAsToGTLF(pcdFilename, pcdRenderType, pcdPointSize, updateGLTFAttr);
-     // graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-     // graphicsHandler.resizeRenderer(width, height);
+    if (gpuViewRef.current!.children.length === 0) {
+      gpuViewRef.current!.appendChild(canvas);
+    }
+    graphicsHandler.uploadAsToGTLF(
+      pcdFilename,
+      pcdRenderType,
+      pcdPointSize,
+      updateGLTFAttr
+    );
+    // graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+    // graphicsHandler.resizeRenderer(width, height);
   });
 
   return (
