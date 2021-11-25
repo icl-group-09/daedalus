@@ -31,9 +31,10 @@ const GPUView = ({
      if (gpuViewRef.current!.children.length === 0) {
        gpuViewRef.current!.appendChild(canvas);
      }
-    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-    graphicsHandler.resizeRenderer(width, height);
 
+     const gltfPath = graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+     graphicsHandler.resizeRenderer(width, height);
+     document.getElementById("ar-model")?.setAttribute("gltf-model", gltfPath)
   });
 
   return (

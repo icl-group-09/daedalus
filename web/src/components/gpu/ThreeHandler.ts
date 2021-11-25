@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
 
 export interface IGraphicsHandler {
-  renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
+  renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): string;
   resizeRenderer(width: number, height: number): void;
 }
 
@@ -131,7 +131,7 @@ export class ThreeHandler implements IGraphicsHandler {
     pcdFilename: string,
     renderType: RenderType,
     pcdPointSize: number
-  ): void {
+  ): string {
     if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
@@ -151,6 +151,7 @@ export class ThreeHandler implements IGraphicsHandler {
       this.setPointsProperties(this.points, pcdPointSize, renderType);
       this.renderScene();
     }
+    return "torus.gltf"
   }
 
   private setPointsProperties(

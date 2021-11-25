@@ -13,7 +13,7 @@ export const EnableGPUContext = createContext(true);
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
-  renderPCD: (pcdFilename: String) => {},
+  renderPCD: (pcdFilename: String) => "",
   resizeRenderer: (width: number, height: number) => {},
 };
 
