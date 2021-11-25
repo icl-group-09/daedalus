@@ -4,5 +4,8 @@
   },
   "scripts": {
     "prepare": "husky install"
+  },
+  "dependencies": {
+    "three.terrain.js": "^2.0.0"
   }
 }

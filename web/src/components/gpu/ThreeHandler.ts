@@ -22,7 +22,7 @@ export class ThreeHandler implements IGraphicsHandler {
     this.initRenderer(width, height);
    // this.initSkyBox();
     this.initControls();
-    
+    this.loadHeightMap();
     new THREE.CubeTextureLoader()
     .setPath('/')
     .load(
@@ -134,7 +134,7 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private loadPCD(pcdFilename: string, isHeatMap: boolean, pcdPointSize: number) {
     const loader = new PCDLoader();
-    loader.load("/resultc.pcd", points => {
+    loader.load("/result.pcd", points => {
       if (isHeatMap) {
         const numPoints = points.geometry.attributes.position.count;
         var minY = 1000000;
@@ -161,7 +161,7 @@ export class ThreeHandler implements IGraphicsHandler {
           colors.push(color.r, color.g, color.b);
         }
         points.geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-      }
+      } 
       points.material = new THREE.PointsMaterial( { size: pcdPointSize, vertexColors: true } )
       points.geometry.center();
       points.geometry.rotateX(Math.PI);
@@ -169,6 +169,34 @@ export class ThreeHandler implements IGraphicsHandler {
       this.renderScene();
     });
   }
+
+  private loadHeightMap() {
+    var img = new Image()
+    img.onload = function () {
+      var canvas = document.createElement( 'canvas' );
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var context = canvas.getContext( '2d' );
+        var size = img.width * img.height;
+        var data = new Float32Array( size );
+        context!.drawImage(img,0,0);
+        for ( var i = 0; i < size; i ++ ) {
+            data[i] = 0
+        }
+        var imgd = context!.getImageData(0, 0, img.width, img.height);
+        var pix = imgd.data;
+        var j=0;
+        for (var m = 0; m<pix.length; m+=4) {
+            var all = pix[m]+pix[m+1]+pix[m+2];
+            data[j++] = all/(12);
+        }
+        console.log("hi")
+        return data;
+    }
+    img.src = "/thing2.tif"
+  }
+
+  
 
   private renderScene() {
     this.renderer.render(this.scene, this.camera);
