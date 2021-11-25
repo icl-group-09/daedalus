@@ -185,7 +185,7 @@ export class ThreeHandler implements IGraphicsHandler {
 
           fetch("/upload_parsed", {
             method: "POST",
-            // TODO: CORS here will have to be investigated when we do deployment
+            // NOTE: CORS here will have to be investigated when we do deployment
             mode: "cors", // no-cors, *cors, same-origin
             cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
             credentials: "same-origin", // include, *same-origin, omit

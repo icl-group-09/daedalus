@@ -34,8 +34,8 @@ def get_pcd(filename: str) -> Response:
 @bp.route('/upload_parsed', methods=['POST'])
 def add_message():
     content = request.json
-    # TODO: content has a property rawGLTF which is an ascii string that should
+    # NOTE: content has a property rawGLTF which is an ascii string that should
     # be written to a file which should be served to the front end
     print(content)
-    # TODO: torus should not be hardcoded here.
+    # NOTE: torus should not be hardcoded here.
     return jsonify({"path":"torus.gltf"})
