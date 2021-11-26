@@ -25,9 +25,10 @@ const GPUView = ({
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
-  const updateGLTFAttr = (path: string) => {
-    console.log("I was called with path: ", path);
-    document.getElementById("ar-model")?.setAttribute("gltf-model", path);
+  const updateGLTFAttr = (token: string) => {
+    console.log("I was called with token: ", token);
+    const fullPath = `http://localhost:5000/get_gltf/${token}.gltf`
+    document.getElementById("ar-model")?.setAttribute("gltf-model", fullPath);
   };
 
   useEffect(() => {

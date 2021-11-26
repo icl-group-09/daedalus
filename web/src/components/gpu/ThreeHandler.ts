@@ -161,11 +161,12 @@ export class ThreeHandler implements IGraphicsHandler {
         this.originalPointsColors = points.geometry.getAttribute("color");
         points.geometry.rotateX(Math.PI);
         this.setPointsProperties(points, pcdPointSize, renderType);
+        this.scene.add(points);
         cb();
       });
     } else {
       this.setPointsProperties(this.points, pcdPointSize, renderType);
-      this.renderScene();
+      cb();
     }
   }
 
@@ -181,8 +182,6 @@ export class ThreeHandler implements IGraphicsHandler {
       exporter.parse(
         this.scene,
         gltf => {
-          // fetch("/")
-
           fetch("/upload_parsed", {
             method: "POST",
             // NOTE: CORS here will have to be investigated when we do deployment
@@ -197,11 +196,7 @@ export class ThreeHandler implements IGraphicsHandler {
           })
             .then(res => res.json())
             .then(data => cb(data.path));
-
-          // Return / set path
-          // cb("torus.gltf");
-        },
-        {}
+        }, {}
       );
     };
     this.createModelAnd(pcdFilename, mode, pcdPointSize, parse);
@@ -212,7 +207,7 @@ export class ThreeHandler implements IGraphicsHandler {
     renderType: RenderType,
     pcdPointSize: number
   ): void {
-    const renderCB = () => this.renderScene();
+    const renderCB = () => this.renderScene()
     this.createModelAnd(pcdFilename, renderType, pcdPointSize, renderCB);
   }
 

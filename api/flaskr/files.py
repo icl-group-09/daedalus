@@ -1,5 +1,6 @@
 from flask import request, Blueprint, send_file, jsonify
 from flask.wrappers import Response
+import secrets
 import os
 import config
 from services.AzureService import AzureService
@@ -31,11 +32,25 @@ def get_pcd(filename: str) -> Response:
         except FileNotFoundError:
             pass
 
-@bp.route('/upload_parsed', methods=['POST'])
-def add_message():
+
+@bp.route("/get_gltf/<string:token>.gltf", methods=["GET"])
+def get_gltf(token: str) -> Response:
+    path = f"{os.getcwd()}/gltfs/{token}.gltf"
+    if os.path.exists(path):
+        res = send_file(path)
+        res.headers.add("Access-Control-Allow-Origin", "*")
+        return res
+    else:
+        return Response(f"Cannot find {token}.gltf", status=404)
+        
+
+# TODO delete these files eventually
+@bp.route("/upload_parsed", methods=["POST"])
+def generate_url_for_gltf() -> str:
     content = request.json
-    # NOTE: content has a property rawGLTF which is an ascii string that should
-    # be written to a file which should be served to the front end
-    print(content)
-    # NOTE: torus should not be hardcoded here.
-    return jsonify({"path":"torus.gltf"})
+    token = secrets.token_urlsafe(16)
+
+    with open(f"{os.getcwd()}/gltfs/{token}.gltf", "w") as f:
+        f.write(content["rawGLTF"])
+
+    return jsonify({"path": token})
