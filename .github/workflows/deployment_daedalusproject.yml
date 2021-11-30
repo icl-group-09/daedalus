@@ -53,33 +53,11 @@ jobs:
           path: |
             . 
             !venv/
-
-  deploy-back:
-    runs-on: ubuntu-latest
-    needs: build-back
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: python-app
-          path: .
-
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
-        id: deploy-to-webapp
-        with:
-          app-name: 'daedalusproject'
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2967E8EA9C1C4074B29E1992D3F84454 }}
-
-
+            
+  
   build-front:
     runs-on: ubuntu-latest
-    needs: deploy-back
+    needs: build-back
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -114,3 +92,26 @@ jobs:
 #           user_email: 'github-actions[bot]@users.noreply.github.com'
 #           github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
 #           repository: ${{ github.repository }}
+
+  deploy-back:
+    runs-on: ubuntu-latest
+    needs: build-front
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: python-app
+          path: .
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
+        with:
+          app-name: 'daedalusproject'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2967E8EA9C1C4074B29E1992D3F84454 }}
+
