@@ -40,7 +40,7 @@ def default() -> Any: # TODO fix
 
 def create_app(test_config: str =None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True, static_url_path="", static_folder="build", template_folder="build")
+    app = Flask(__name__, instance_relative_config=True, static_url_path="", static_folder="web/build", template_folder="web/build")
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
