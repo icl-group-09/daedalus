@@ -55,4 +55,6 @@ def create_app(test_config: str =None):
 
     return app
 
+app = create_app()
 print("Finished running all the stuff")
+
