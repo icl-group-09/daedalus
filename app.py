@@ -51,7 +51,7 @@ def create_app(test_config: str =None):
 
     # apply the blueprints to the app
 
-    app.register_blueprint(files.bp)
+    app.register_blueprint(bp)
 
     return app
 
