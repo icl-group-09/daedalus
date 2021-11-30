@@ -1,8 +1,9 @@
-from flask import Flask, Blueprint, send_file
+from flask import Flask, Blueprint, send_file, render_template
 from flask.wrappers import Response
 import os
 import config
 from services.AzureService import AzureService
+from typing import Any
 
 from services.CloudStorageService import CloudStorageService
 
@@ -33,14 +34,13 @@ def get_pcd(filename: str) -> Response:
 
 
 @bp.route("/", methods=["GET"])
-def default() -> Response:
-
-    return Response("Default", status=200)
+def default() -> Any: # TODO fix
+    return render_template("index.html")
 
 
 def create_app(test_config: str =None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, instance_relative_config=True, static_url_path="", static_folder="build", template_folder="build")
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
