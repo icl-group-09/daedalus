@@ -46,6 +46,10 @@ jobs:
         run: |
           cd web
           npm run build
+          
+      - name: Nuke node_modules
+          cd web
+          rm -rf node_modules
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v2
