@@ -48,6 +48,7 @@ jobs:
           npm run build
           
       - name: Nuke node_modules
+        run: |
           cd web
           rm -rf node_modules
 
