@@ -1,14 +1,13 @@
+import os
+
 from flask import Flask, Blueprint, send_file, render_template
 from flask.wrappers import Response
-import os
-import config
+from api import config
 from services.AzureService import AzureService
 from typing import Any
-
 from services.CloudStorageService import CloudStorageService
 
 bp = Blueprint("files", __name__, url_prefix="")
-
 
 @bp.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
@@ -35,6 +34,8 @@ def get_pcd(filename: str) -> Response:
 
 @bp.route("/", methods=["GET"])
 def default() -> Any: # TODO fix
+
+    print("APP")
     return render_template("index.html")
 
 
@@ -56,5 +57,4 @@ def create_app(test_config: str =None):
     return app
 
 app = create_app()
-print("Finished running all the stuff")
 
