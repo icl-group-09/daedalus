@@ -1,4 +1,4 @@
 export enum RenderType {
-    PCD,
-    HM
-  }
+  PCD,
+  HM,
+}

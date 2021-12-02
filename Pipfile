@@ -9,6 +9,8 @@ azure-storage-blob = "*"
 pyright = "*"
 pylint = "*"
 python-dotenv = "*"
+numpy = "*"
+matplotlib = "*"
 
 [dev-packages]
 

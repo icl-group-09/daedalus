@@ -1,15 +1,16 @@
 import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
-import { useEffect, useRef } from "react";
-import {RenderType} from "./RenderType"
+import { useEffect } from "react";
+import {RenderType} from "./RenderType";
 
 type GPUViewProps = {
   width: number;
   height: number;
   graphicsHandler: IGraphicsHandler;
   pcdFilename: string;
-  pcdRenderType: RenderType
-  pcdPointSize: number
+  pcdRenderType: RenderType;
+  pcdPointSize: number;
+  canvas: HTMLCanvasElement;
 };
 
 const GPUView = ({
@@ -18,21 +19,26 @@ const GPUView = ({
   graphicsHandler,
   pcdFilename,
   pcdRenderType,
-  pcdPointSize
+  pcdPointSize,
+  canvas,
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
-  const elemRef = useRef<HTMLDivElement>(null);
+  const gpuViewRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
     // Run the first time this component renders
-    graphicsHandler.renderPCD(elemRef.current!, pcdFilename, pcdRenderType, pcdPointSize);
+     if (gpuViewRef.current!.children.length === 0) {
+       gpuViewRef.current!.appendChild(canvas);
+     }
+    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
     graphicsHandler.resizeRenderer(width, height);
+
   });
 
   return (
     <div className="gpu-view" style={css}>
-      <div className="gpu-view-frame" ref={elemRef}></div>
+      <div id="gpu-view-frame" ref={gpuViewRef}></div>
     </div>
   );
 };
