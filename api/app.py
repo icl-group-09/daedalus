@@ -1,5 +1,5 @@
 from flask import Flask
-import flaskr.files as files
+import files
 
 def create_app(test_config: str =None):
     # create and configure the app
