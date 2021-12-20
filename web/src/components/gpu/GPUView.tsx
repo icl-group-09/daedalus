@@ -42,7 +42,7 @@ const GPUView = ({
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
 
-  }, [rotateDir]);
+  }, [graphicsHandler, rotateDir]);
 
   return (
     <div className="gpu-view" style={css}>
