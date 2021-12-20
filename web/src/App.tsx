@@ -7,6 +7,7 @@ import PcdMenu from "./components/menu/PcdMenu";
 import Slider from "react-input-slider";
 
 import { RenderType } from "./components/gpu/RenderType";
+import { RotationDir } from "./components/gpu/Rotate";
 
 export const EnableGPUContext = createContext(true);
 
@@ -15,6 +16,7 @@ const canvas: HTMLCanvasElement = document.createElement("canvas");
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
   renderPCD: (pcdFilename: String) => {},
   resizeRenderer: (width: number, height: number) => {},
+  rotatePCD: (rotateDir: RotationDir) => {},
 };
 
 function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>, 
@@ -29,6 +31,7 @@ function App() {
   const [pointSize, setPointSize] = useState(0.003);
   const [w, setW] = useState(window.innerWidth);
   const [h, setH] = useState(window.innerHeight);
+  const [r, setR] = useState({X: 0, Y: 0, Z: 0});
   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
   (window as any).funkyFunc = (x: number, y: number) => {
@@ -49,6 +52,24 @@ function App() {
   const ClickHM = () => {
     setPointCloudType(RenderType.HM);
   };
+
+
+  const rotateX = () => {
+    setR({X: Math.PI/2, Y: 0, Z: 0})
+  }
+
+  const rotateXBack = () => {
+    setR({X: -Math.PI/2, Y: 0, Z: 0})
+  }
+
+  const rotateY = () => {
+    setR( {X: 0, Y: Math.PI/2, Z: 0})
+  }
+
+  const rotateYBack = () => {
+    setR( {X: 0, Y: -Math.PI/2, Z: 0})
+  }
+
 
   const graphicsHandler = !useContext(EnableGPUContext)
     ? DUMMY_GRAPHICS_HANDLER
@@ -80,6 +101,12 @@ function App() {
           <button onClick={ClickHM}>Show Heat Map</button>
           <button>Show 2D Map</button>
         </div>
+        <div>
+          <button onClick={rotateX}>Rotate PCD X</button>
+          <button onClick={rotateXBack}>Rotate PCD X Back</button>
+          <button onClick={rotateY}>Rotate PCD Y</button>
+          <button onClick={rotateYBack}>Rotate PCD Y Back</button>
+        </div>
           <PcdMenu pcd={pcd} setPcd={setPcd}/>
             <Slider
               axis="x"
@@ -99,6 +126,7 @@ function App() {
         pcdRenderType={pointCloudType}
         pcdPointSize={pointSize}
         canvas={canvas}
+        rotateDir={r}
       />
     </div>
   );
