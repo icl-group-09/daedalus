@@ -1,5 +1,5 @@
 from services.CloudStorageService import CloudStorageService
-from api import config
+import config
 import os
 
 from azure.storage.blob import BlobServiceClient, __version__
