@@ -25,6 +25,7 @@ jobs:
       - name: Create and start virtual environment
         run: |
           mv api/* .
+          mv api/.env .
           python -m venv venv
           source venv/bin/activate
 
