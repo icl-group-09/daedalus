@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, Blueprint, send_file, render_template
 from flask.wrappers import Response
-from api import config
+from . import config
 from services.AzureService import AzureService
 from typing import Any
 from services.CloudStorageService import CloudStorageService
