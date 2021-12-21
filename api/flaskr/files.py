@@ -1,10 +1,11 @@
+import os
+
 from flask import Blueprint, send_file, request
 from flask.wrappers import Response
-import os
 import config
-from services.AzureService import AzureService
+import services.AzureService as AzureService
+import services.CloudStorageService as CloudStorageService
 from pathlib import Path
-from services.CloudStorageService import CloudStorageService
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -14,9 +15,12 @@ bp = Blueprint("files", __name__, url_prefix="")
 @bp.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
 
-    cloud_storage_service: CloudStorageService = AzureService()
+    cloud_storage_service: CloudStorageService.CloudStorageService = (
+        AzureService.AzureService()
+    )
     download_file_path = os.path.join(
-        bp.root_path, config.PCD_RELATIVE_DIRECTORY, filename)
+        bp.root_path, config.PCD_RELATIVE_DIRECTORY, filename
+    )
 
     try:
         # Retrieve the file from the cloud service and serve it as the response
