@@ -3,27 +3,33 @@ import { useState, createContext, useContext } from "react";
 
 export function Upload(){
 
-  const [selectedFile, setSelectedFile] = useState<File>();
-	const [isFilePicked, setIsFilePicked] = useState(false);
+  const [terrainFile, setTerrainFile] = useState<File>();
+  const [heightFile, setHeightFile] = useState<File>();
+	// const [isFilePicked, setIsFilePicked] = useState(false);
 
-	const changeHandler = (
+	const terrainChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement> 
   ) => {
-		setSelectedFile(event.target.files![0]);
-		setIsFilePicked(true);
+		setTerrainFile(event.target.files![0]);
+	};
+
+	const heightChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement> 
+  ) => {
+		setHeightFile(event.target.files![0]);
 	};
 
 	const handleSubmission = () => {
-    if (selectedFile == undefined) {
+    if (terrainFile === undefined && heightFile === undefined) {
       // TODO: Tell user to make sure they've selected a file
       return;
     }
 		const formData = new FormData();
 
-		formData.append('images', selectedFile!);
+		formData.append('images', terrainFile!);
+		formData.append('images', heightFile!);
 
 		fetch(
-			// 'https://freeimage.host/api/1/upload?key=<YOUR_API_KEY>',
       `/uploadTerrainData`,
 			{
 				method: 'POST',
@@ -41,7 +47,8 @@ export function Upload(){
 
     return(
         <div>
-                 <input type="file" name="file" onChange={changeHandler} />
+                 <input type="file" name="terrainFile" onChange={terrainChangeHandler} />
+                 <input type="file" name="heightFile" onChange={heightChangeHandler} />
                  <div>
                      <button onClick={handleSubmission}>Submit</button>
                  </div>
