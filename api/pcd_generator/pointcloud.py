@@ -43,16 +43,16 @@ with open(pcd_generator_dir + "/result.pcd", "w", encoding="UTF-8") as pcd:
     # Iterate thorugh all the pixels
     for x in range(0, cols, pixel_cut):
         for y in range(0, rows, pixel_cut):
-            sum = (depth_map[y, x, 0] + depth_map[y, x, 1] + depth_map[y, x, 2])
-            print(sum)
-            if sum > 200:
-                sum = 0
-            depth_values[x][y] = sum
+            height_sum = (depth_map[y, x, 0] + depth_map[y, x, 1] + depth_map[y, x, 2])
+            if height_sum > 200:
+                height_sum = 0
+            depth_values[x][y] = height_sum
 
     a = 0
     b = 0.25
-    depth_values = a + ((depth_values - np.min(depth_values)) * (b - a) / (np.max(depth_values) - np.min(depth_values)))
-    
+    num = (depth_values - np.min(depth_values)) * (b - a)
+    den = np.max(depth_values) - np.min(depth_values)
+    depth_values = a + (num / den)
     for x in range(0, cols, pixel_cut):
         for y in range(0, rows, pixel_cut):
             pixel_color = (image[y, x, 0], image[y, x, 1], image[y, x, 2])
