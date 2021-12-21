@@ -94,7 +94,9 @@ disable=raw-checker-failed,
         wrong-import-order,
         relative-beyond-top-level,
         too-few-public-methods,
-        C0103 # Modules name "" doesn't conform to snake_case naming style
+        C0103, # Modules name "" doesn't conform to snake_case naming style
+        consider-using-from-import,
+        trailing-newlines
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
