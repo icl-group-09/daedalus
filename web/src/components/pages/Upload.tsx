@@ -1,11 +1,10 @@
 import React from "react";
-import { useState, createContext, useContext } from "react";
+import { useState } from "react";
 
 export function Upload(){
 
   const [terrainFile, setTerrainFile] = useState<File>();
   const [heightFile, setHeightFile] = useState<File>();
-	// const [isFilePicked, setIsFilePicked] = useState(false);
 
 	const terrainChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement> 
@@ -39,6 +38,7 @@ export function Upload(){
 			.then((response) => response.json())
 			.then((result) => {
 				console.log('Success:', result);
+        // TODO: Tell the user they succeeded
 			})
 			.catch((error) => {
 				console.error('Error:', error);

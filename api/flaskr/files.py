@@ -39,7 +39,8 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 def is_valid_upload(upload: FileStorage) -> bool:
     # some validation logic
-    if (upload.filename == None): return False
+    if upload.filename is None:
+        return False
     return Path(upload.filename).suffix.lower() in ['.jpg', '.jpeg', '.png', '.tif']
 
 @bp.route("/uploadTerrainData", methods=["POST"])
@@ -49,16 +50,16 @@ def upload_terrain_data() -> Response:
         print("No uploaded files")
         print(str(request.files.getlist('images')))
         return Response("No file(s) uploaded", status=400)
-    
+
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads:
         print("No valid uploads")
         return Response('invalid image(s)', 400)
-    
+
     for upload in valid_uploads:
-        if (upload.filename == None): 
+        if upload.filename is None:
             # Should never fall into this case because we filter out None files
-            return Response('invalid image(s)', 400) 
+            return Response('invalid image(s)', 400)
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
 
