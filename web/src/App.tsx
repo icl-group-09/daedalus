@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import { IGraphicsHandler, ThreeHandler } from "./components/gpu/ThreeHandler";
 import Upload from "./components/pages/Upload"
 import Welcome from "./components/pages/Welcome";
 import {
