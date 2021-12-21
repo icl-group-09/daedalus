@@ -13,12 +13,16 @@ import services.CloudStorageService as CloudStorageService
 
 bp = Blueprint("files", __name__, url_prefix="")
 
+
 @bp.route("/getPcd/<string:filename>", methods=["GET"])
 def get_pcd(filename: str) -> Response:
 
-    cloud_storage_service: CloudStorageService.CloudStorageService = AzureService.AzureService()
+    cloud_storage_service: CloudStorageService.CloudStorageService = (
+        AzureService.AzureService()
+    )
     download_file_path = os.path.join(
-        bp.root_path, config.PCD_RELATIVE_DIRECTORY, filename)
+        bp.root_path, config.PCD_RELATIVE_DIRECTORY, filename
+    )
 
     try:
         # Retrieve the file from the cloud service and serve it as the response
@@ -37,7 +41,5 @@ def get_pcd(filename: str) -> Response:
 
 
 @bp.route("/", methods=["GET"])
-def default() -> Any: # TODO fix
+def default() -> Any:
     return render_template("index.html")
-
-
