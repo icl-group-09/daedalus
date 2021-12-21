@@ -12,7 +12,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -23,7 +22,7 @@ jobs:
           python-version: '3.9'
 
      - name: Lint and test
-        run: |
+       run: |
           cd api
           pip install pipenv
           pipenv install 
