@@ -2,6 +2,8 @@ import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
 import { useEffect } from "react";
 import {RenderType} from "./RenderType";
+import { RotationDir } from "./Rotate";
+
 
 type GPUViewProps = {
   width: number;
@@ -11,6 +13,7 @@ type GPUViewProps = {
   pcdRenderType: RenderType;
   pcdPointSize: number;
   canvas: HTMLCanvasElement;
+  rotateDir: RotationDir;
 };
 
 const GPUView = ({
@@ -21,6 +24,7 @@ const GPUView = ({
   pcdRenderType,
   pcdPointSize,
   canvas,
+  rotateDir,
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
@@ -35,6 +39,10 @@ const GPUView = ({
     graphicsHandler.resizeRenderer(width, height);
 
   });
+  useEffect(() => {
+    graphicsHandler.rotatePCD(rotateDir);
+
+  }, [graphicsHandler, rotateDir]);
 
   return (
     <div className="gpu-view" style={css}>
