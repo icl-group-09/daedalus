@@ -1,12 +1,8 @@
 import os
 
-from flask import Blueprint, send_file, render_template
+from flask import Blueprint, send_file
 from flask.wrappers import Response
 import config
-from typing import Any
-
-# from services.AzureService import AzureService
-# from services.CloudStorageService import CloudStorageService
 
 import services.AzureService as AzureService
 import services.CloudStorageService as CloudStorageService
@@ -39,7 +35,3 @@ def get_pcd(filename: str) -> Response:
         except FileNotFoundError:
             pass
 
-
-@bp.route("/", methods=["GET"])
-def default() -> Any:
-    return render_template("index.html")
