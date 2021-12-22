@@ -47,7 +47,7 @@ def get_gltf(token: str) -> Response:
         return res
     else:
         return Response(f"Cannot find {token}.gltf", status=404)
-        
+
 
 # TODO delete these files eventually
 @bp.route("/upload_parsed", methods=["POST"])
@@ -60,32 +60,35 @@ def generate_url_for_gltf() -> str:
 
     return jsonify({"path": token})
 
-UPLOAD_DIR: Path = Path(__file__).parent / 'uploads'
+
+UPLOAD_DIR: Path = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def is_valid_upload(upload: FileStorage) -> bool:
     # some validation logic
     if upload.filename is None:
         return False
-    return Path(upload.filename).suffix.lower() in ['.jpg', '.jpeg', '.png', '.tif']
+    return Path(upload.filename).suffix.lower() in [".jpg", ".jpeg", ".png", ".tif"]
+
 
 @bp.route("/uploadTerrainData", methods=["POST"])
 def upload_terrain_data() -> Response:
-    uploaded_files = request.files.getlist('images')
+    uploaded_files = request.files.getlist("images")
     if not uploaded_files or not uploaded_files[0].filename:
         print("No uploaded files")
-        print(str(request.files.getlist('images')))
+        print(str(request.files.getlist("images")))
         return Response("No file(s) uploaded", status=400)
 
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads:
         print("No valid uploads")
-        return Response('invalid image(s)', 400)
+        return Response("invalid image(s)", 400)
 
     for upload in valid_uploads:
         if upload.filename is None:
             # Should never fall into this case because we filter out None files
-            return Response('invalid image(s)', 400)
+            return Response("invalid image(s)", 400)
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
 
