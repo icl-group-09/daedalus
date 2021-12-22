@@ -2,7 +2,7 @@ import os
 
 from flask import Blueprint, send_file, request
 from flask.wrappers import Response
-from api.pcd_generator.pointcloud import generate_pcd
+from pcd_generator.pointcloud import generate_pcd
 import config
 import services.AzureService as AzureService
 import services.CloudStorageService as CloudStorageService
