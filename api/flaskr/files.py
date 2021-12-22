@@ -51,7 +51,7 @@ def get_gltf(token: str) -> Response:
 
 @bp.route("/upload_parsed", methods=["POST"])
 def generate_url_for_gltf() -> Response:
-    content = request.json
+    content = request.get_json()
     token = secrets.token_urlsafe(16)
 
     with open(f"{os.getcwd()}/gltfs/{token}.gltf", "w") as f:
