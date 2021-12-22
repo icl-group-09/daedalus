@@ -12,10 +12,7 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
     depth_map = mpimg.imread(depth_map_location)
     image = mpimg.imread(image_location)
 
-    rows, cols, colours = depth_map.shape
-
-    # Send pixels not correctly mapped to the back
-    max_val = image.max() * 1.1
+    rows, cols, _ = depth_map.shape
 
     # Cut down pixels for time purpose
     # Computations need to be under 30s
