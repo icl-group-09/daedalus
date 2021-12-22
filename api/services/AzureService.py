@@ -22,3 +22,10 @@ class AzureService(CloudStorageService):
                 download_file.write(blob_client.download_blob().readall())
         except ResourceNotFoundError as err:
             raise FileNotFoundError from err
+
+    def upload_file(self, filename: str, upload_file_path: str) -> None:
+        blob_client = self.blob_service_client.get_blob_client(
+            container=config.BLOB_CONTAINER, blob=filename)
+        with open(upload_file_path, "rb") as upload_file:
+            blob_client.upload_blob(upload_file, overwrite=True)
+ 
