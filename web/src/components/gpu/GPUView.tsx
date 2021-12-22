@@ -4,8 +4,6 @@ import { useEffect } from "react";
 import { RenderType } from "./RenderType";
 import { RotationDir } from "./Rotate";
 
->>>>>>> main
-
 type GPUViewProps = {
   width: number;
   height: number;

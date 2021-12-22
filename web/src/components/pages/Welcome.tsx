@@ -12,6 +12,12 @@ export const EnableGPUContext = createContext(true);
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 
 const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
+  uploadAsToGTLF: (
+    pcdFilename: string,
+    mode: RenderType,
+    pcdPointSize: number,
+    cb: (path: string) => void
+  ) => {},
   renderPCD: (pcdFilename: String) => {},
   resizeRenderer: (width: number, height: number) => {},
   rotatePCD: (rotateDir: RotationDir) => {},
