@@ -49,8 +49,9 @@ def get_gltf(token: str) -> Response:
         return Response(f"Cannot find {token}.gltf", status=404)
 
 
+# TODO delete these files eventually
 @bp.route("/upload_parsed", methods=["POST"])
-def generate_url_for_gltf() -> str:
+def generate_url_for_gltf() -> Response:
     content = request.json
     token = secrets.token_urlsafe(16)
 
