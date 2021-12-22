@@ -2,6 +2,9 @@ import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
 import { useEffect } from "react";
 import { RenderType } from "./RenderType";
+import { RotationDir } from "./Rotate";
+
+>>>>>>> main
 
 type GPUViewProps = {
   width: number;
@@ -11,6 +14,7 @@ type GPUViewProps = {
   pcdRenderType: RenderType;
   pcdPointSize: number;
   canvas: HTMLCanvasElement;
+  rotateDir: RotationDir;
 };
 
 const GPUView = ({
@@ -21,13 +25,13 @@ const GPUView = ({
   pcdRenderType,
   pcdPointSize,
   canvas,
+  rotateDir,
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
   const updateGLTFAttr = (token: string) => {
-    console.log("I was called with token: ", token);
-    const fullPath = `http://localhost:5000/get_gltf/${token}.gltf`
+    const fullPath = `/get_gltf/${token}.gltf`
     document.getElementById("ar-model")?.setAttribute("gltf-model", fullPath);
   };
 
@@ -46,6 +50,10 @@ const GPUView = ({
     graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
     // graphicsHandler.resizeRenderer(width, height);
   });
+  useEffect(() => {
+    graphicsHandler.rotatePCD(rotateDir);
+
+  }, [graphicsHandler, rotateDir]);
 
   return (
     <div className="gpu-view" style={css}>

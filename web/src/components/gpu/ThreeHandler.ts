@@ -3,6 +3,7 @@ import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
+import { RotationDir } from "./Rotate";
 
 export interface IGraphicsHandler {
   uploadAsToGTLF(
@@ -13,6 +14,7 @@ export interface IGraphicsHandler {
   ): void;
   renderPCD(pcdFilename: string, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
+  rotatePCD(rotateDir: RotationDir): void;
 }
 
 export class ThreeHandler implements IGraphicsHandler {
@@ -136,6 +138,16 @@ export class ThreeHandler implements IGraphicsHandler {
     });
     controls.minDistance = 0.5;
     controls.maxDistance = 10;
+  }
+
+  rotatePCD(rotateDir: RotationDir) {
+      if (this.points !== undefined) {
+        this.points.geometry.rotateX(rotateDir.X);
+        this.points.geometry.rotateY(rotateDir.Y);
+        this.points.geometry.rotateZ(rotateDir.Z);
+        this.renderHeatMap(this.points);
+        this.renderScene();
+      }
   }
 
   resizeRenderer(width: number, height: number) {

@@ -5,7 +5,14 @@ import { useState, createContext, useContext } from "react";
 import GPUView from "./components/gpu/GPUView";
 import PcdMenu from "./components/menu/PcdMenu";
 import Slider from "react-input-slider";
-
+import Upload from "./components/pages/Upload"
+import Welcome from "./components/pages/Welcome";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 import { RenderType } from "./components/gpu/RenderType";
 
 export const EnableGPUContext = createContext(true);
@@ -74,13 +81,25 @@ function App() {
   } as const;
 
   return (
-    <div className="App" style={cssCenter}>
-      <div className="controls" style={cssControls}>
-        <h1>Welcome to Daedalus!</h1>
+    <Router>
+      <div className = "App">
         <div>
-          <button onClick={ClickPCD}>Show Point Cloud</button>
-          <button onClick={ClickHM}>Show Heat Map</button>
-          <button>Show 2D Map</button>
+          <ul>
+            <li>
+              <Link to="/">Welcome</Link>
+            </li>
+            <li>
+              <Link to="/upload">Upload</Link>
+            </li>
+          </ul>
+          </div>
+     
+
+        <div className = "content">
+          <Routes>
+            <Route path="/" element={<Welcome/>} />
+            <Route path="/upload" element={<Upload/>} />
+          </Routes>
         </div>
         <PcdMenu pcd={pcd} setPcd={setPcd} />
         <Slider
@@ -92,18 +111,9 @@ function App() {
           onChange={({ x }) => setPointSize(x)}
         />
       </div>
-
-      <GPUView
-        width={w}
-        height={h}
-        graphicsHandler={graphicsHandler}
-        pcdFilename={pcd}
-        pcdRenderType={pointCloudType}
-        pcdPointSize={pointSize}
-        canvas={canvas}
-      />
-    </div>
+    </Router>
   );
 }
+
 
 export default App;
