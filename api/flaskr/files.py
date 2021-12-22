@@ -74,7 +74,7 @@ def upload_terrain_data() -> Response:
             pcdname = upload.filename
 
         upload.save(save_path)
-            
+
     pcdname = pcdname[:pcdname.rfind('.')] + ".pcd"
 
     pcd_path = generate_pcd(paths[0], paths[1], pcdname)

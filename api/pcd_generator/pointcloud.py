@@ -38,10 +38,7 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
         pcd.write("POINTS " + str(total_points)+"\n")
         pcd.write("DATA ascii\n")
 
-        x_values = []
-        y_values = []
         depth_values = np.zeros((cols, rows))
-        colours = []
         # Iterate thorugh all the pixels
         for x in range(0, cols, pixel_cut):
             for y in range(0, rows, pixel_cut):
@@ -57,12 +54,9 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
         depth_values = a + (num / den)
         for x in range(0, cols, pixel_cut):
             for y in range(0, rows, pixel_cut):
-                pixel_color = (image[y, x, 0], image[y, x, 1], image[y, x, 2])
                 hex_color = image[y, x, 0] * \
                     (16 ** 4) + image[y, x, 1] * (16 ** 2) + image[y, x, 2]
                 pcd.write(str(x/1000) + " " + str(depth_values[x][y]) + " " +
                           str(y/1000) + " " + str(hex_color) + "\n")
 
-    return path 
-
-    print("Finished Generating")
+    return path

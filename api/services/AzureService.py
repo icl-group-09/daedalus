@@ -28,4 +28,3 @@ class AzureService(CloudStorageService):
             container=config.BLOB_CONTAINER, blob=filename)
         with open(upload_file_path, "rb") as upload_file:
             blob_client.upload_blob(upload_file, overwrite=True)
- 
