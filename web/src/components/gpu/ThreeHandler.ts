@@ -35,23 +35,29 @@ export class ThreeHandler implements IGraphicsHandler {
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
-    
+    this.createSkybox();
+  
+  }
+
+  private createSkybox() {
     new THREE.CubeTextureLoader()
     .setPath('/')
     .load(
         // urls of images used in the cube texture
+        // Order must be rt, lf, up, dn, ft, bk
         [
-            'purplenebula_ft.png',
-            'purplenebula_bk.png',
-            'purplenebula_lf.png',
-            'purplenebula_rt.png',
-            'purplenebula_up.png',
-            'purplenebula_dn.png'
+            'water_box_rt.jpg',
+            'water_box_lf.jpg',
+            'water_box_up.jpg',
+            'water_box_dn.jpg',
+            'water_box_ft.jpg',
+            'water_box_bk.jpg'
+            
         ],
         // what to do when loading is over
          (cubeTexture) => {
             // Geometry
-            const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
+            const skybox = new THREE.BoxGeometry(100000, 100000, 100000);
             // Material
             var material = new THREE.MeshBasicMaterial({
                 // CUBE TEXTURE can be used with
@@ -67,35 +73,7 @@ export class ThreeHandler implements IGraphicsHandler {
             this.renderer.render(this.scene, this.camera);
         }
     );
-  }
-
-  private createPathStrings(filename: String) {
-    const basePath = "/";
-    const baseFilename = basePath + filename;
-    const fileType = ".png";
-    const sides = ["ft", "bk", "up", "dn", "rt", "lf"];
-    const pathStrings = sides.map(side => {
-      return baseFilename + "_" + side + fileType;
-    });
-    return pathStrings;
-  }
-
-  private createMaterialArray(filename: String) {
-    const skyboxImagepaths = this.createPathStrings(filename);
-    const materialArray = skyboxImagepaths.map(image => {
-      let texture = new THREE.TextureLoader().load(image);
-      return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide }); // <---
-    });
-    return materialArray;
-  }
-
-  private initSkyBox() {
-    const materialArray = this.createMaterialArray("purplenebula");
-    console.log(materialArray);
-    const skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
-    const skybox = new THREE.Mesh(skyboxGeo, materialArray);
-    this.scene.add(skybox);
-  }
+  }  
 
   public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
     if (!ThreeHandler.instance) {
