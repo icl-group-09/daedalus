@@ -1,6 +1,6 @@
 import React from "react";
 import { IGraphicsHandler } from "./ThreeHandler";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { RenderType } from "./RenderType";
 import { RotationDir } from "./Rotate";
 
@@ -45,7 +45,12 @@ const GPUView = ({
 
   }, [graphicsHandler, rotateDir]);
 
-  if (exporting) {
+  // For some reason when we press the button, the request is sent twice
+  // Having a ref to signal that we have already requested solves the issue
+  const alreadyStarted = useRef(false)
+
+  if (exporting && !alreadyStarted.current) {
+    alreadyStarted.current = true
     const updateGLTFAttr = (token: string) => {
       sessionStorage.setItem("gltfName", token)
       window.location.href = "/arscene.html"

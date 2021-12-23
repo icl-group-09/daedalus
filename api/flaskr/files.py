@@ -60,6 +60,16 @@ def generate_url_for_gltf() -> Response:
 
     return jsonify({"path": token})
 
+@bp.route("/delete_gltf", methods=["POST"])
+def delete_gltf_file() -> Response:
+    content = request.json
+
+    assert content is not None
+    name = content["name"]
+    os.remove(f"{os.getcwd()}/gltfs/{name}.gltf")
+
+    return jsonify({})
+
 
 UPLOAD_DIR: Path = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
