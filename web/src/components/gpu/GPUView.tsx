@@ -13,6 +13,7 @@ type GPUViewProps = {
   pcdPointSize: number;
   canvas: HTMLCanvasElement;
   rotateDir: RotationDir;
+  exporting: boolean;
 };
 
 const GPUView = ({
@@ -24,30 +25,35 @@ const GPUView = ({
   pcdPointSize,
   canvas,
   rotateDir,
+  exporting
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
   const updateGLTFAttr = (token: string) => {
-    const fullPath = `/get_gltf/${token}.gltf`
-    document.getElementById("ar-model")?.setAttribute("gltf-model", fullPath);
-  };
+    sessionStorage.setItem("gltfName", token)
+    window.location.href = "/arscene.html"
+  }
 
   useEffect(() => {
     // Run the first time this component renders
     if (gpuViewRef.current!.children.length === 0) {
       gpuViewRef.current!.appendChild(canvas);
     }
-    graphicsHandler.uploadAsToGTLF(
-      pcdFilename,
-      pcdRenderType,
-      pcdPointSize,
-      updateGLTFAttr
-    );
     // NOTE: I uncommented this line so that the test passes (I could not push)
     graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
     // graphicsHandler.resizeRenderer(width, height);
   });
+  useEffect(() => {
+    if (exporting) {
+      graphicsHandler.uploadAsToGTLF(
+        pcdFilename,
+        pcdRenderType,
+        pcdPointSize,
+        updateGLTFAttr
+      );
+    }
+  }, [exporting]);
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
 

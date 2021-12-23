@@ -37,6 +37,8 @@ function Welcome(){
     const [w, setW] = useState(window.innerWidth);
     const [h, setH] = useState(window.innerHeight);
     const [r, setR] = useState({X: 0, Y: 0, Z: 0});
+    const [exporting, setExporting] = useState(false);
+
     window.addEventListener("resize", () => onWindowResize(setW, setH), false);
   
     (window as any).funkyFunc = (x: number, y: number) => {
@@ -110,6 +112,7 @@ function Welcome(){
             <button onClick={rotateXBack}>Rotate PCD X Back</button>
             <button onClick={rotateY}>Rotate PCD Y</button>
             <button onClick={rotateYBack}>Rotate PCD Y Back</button>
+            <button onClick={() => setExporting(true)}>Export to AR</button>
           </div>
             <PcdMenu pcd={pcd} setPcd={setPcd}/>
               <Slider
@@ -131,6 +134,7 @@ function Welcome(){
           pcdPointSize={pointSize}
           canvas={canvas}
           rotateDir={r}
+          exporting={exporting}
         />
       </div>
     );
