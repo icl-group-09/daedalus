@@ -30,10 +30,6 @@ const GPUView = ({
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
-  const updateGLTFAttr = (token: string) => {
-    sessionStorage.setItem("gltfName", token)
-    window.location.href = "/arscene.html"
-  }
 
   useEffect(() => {
     // Run the first time this component renders
@@ -45,19 +41,23 @@ const GPUView = ({
     // graphicsHandler.resizeRenderer(width, height);
   });
   useEffect(() => {
-    if (exporting) {
-      graphicsHandler.uploadAsToGTLF(
-        pcdFilename,
-        pcdRenderType,
-        pcdPointSize,
-        updateGLTFAttr
-      );
-    }
-  }, [exporting]);
-  useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
 
   }, [graphicsHandler, rotateDir]);
+
+  if (exporting) {
+    const updateGLTFAttr = (token: string) => {
+      sessionStorage.setItem("gltfName", token)
+      window.location.href = "/arscene.html"
+    }
+    graphicsHandler.uploadAsToGTLF(
+      pcdFilename,
+      pcdRenderType,
+      pcdPointSize,
+      updateGLTFAttr
+    );
+    return <h1>Exporting to augmented reality...</h1>
+  }
 
   return (
     <div className="gpu-view" style={css}>
