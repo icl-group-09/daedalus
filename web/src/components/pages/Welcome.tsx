@@ -82,7 +82,7 @@ function Welcome(){
   
     const cssControls = {
       position: "absolute",
-      width: "100%",
+      width: "30%",
       left: "0px",
       top: "50px",
       color: "white"

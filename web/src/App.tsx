@@ -10,11 +10,21 @@ import {
 } from "react-router-dom";
 
 function App() {
+
+
+  const cssNavBar = {
+    position: "absolute",
+    width: "30%",
+    left: "0px",
+    top: "0px",
+    color: "white"
+  } as const;
+
   return (
     <Router>
       <div className = "App">
 
-        <div>
+        <div style={cssNavBar}>
           <ul>
             <li>
               <Link to="/">Welcome</Link>

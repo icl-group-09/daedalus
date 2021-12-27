@@ -32,26 +32,28 @@ export class ThreeHandler implements IGraphicsHandler {
   private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
+    this.createSkybox();
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
-    this.createSkybox();
+    this.renderScene();
   
   }
 
   private createSkybox() {
-    new THREE.CubeTextureLoader()
+    this.createCubeTexture()
+    /*new THREE.CubeTextureLoader()
     .setPath('/')
     .load(
         // urls of images used in the cube texture
         // Order must be rt, lf, up, dn, ft, bk
         [
-            'water_box_rt.jpg',
-            'water_box_lf.jpg',
-            'water_box_up.jpg',
-            'water_box_dn.jpg',
-            'water_box_ft.jpg',
-            'water_box_bk.jpg'
+            'highresbox_rt.png',
+            'highresbox_lf.png',
+            'highresbox_up.png',
+            'highresbox_dn.png',
+            'highresbox_ft.png',
+            'highresbox_bk.png'
             
         ],
         // what to do when loading is over
@@ -69,11 +71,29 @@ export class ThreeHandler implements IGraphicsHandler {
             var mesh = new THREE.Mesh(skybox, material);
             this.scene.add(mesh);
             // CUBE TEXTURE is also an option for a background
-            this.scene.background = cubeTexture;
-            this.renderer.render(this.scene, this.camera);
+            //cubeTexture.minFilter = THREE.LinearFilter;
+            // this.scene.background = cubeTexture;
         }
-    );
+    );*/
   }  
+
+  private createCubeTexture() {
+    let geometry = new THREE.BoxGeometry(25,25,25);
+    const images = [
+      'highresbox_rt.png',
+      'highresbox_lf.png',
+      'highresbox_up.png',
+      'highresbox_dn.png',
+      'highresbox_ft.png',
+      'highresbox_bk.png'
+      
+    ]
+    const cubeMaterials = images.map(image => {
+      return new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(image), side: THREE.DoubleSide })
+    })
+    const cube = new THREE.Mesh( geometry, cubeMaterials );
+    this.scene.add(cube);
+  }
 
   public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
     if (!ThreeHandler.instance) {
@@ -83,7 +103,7 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   private initCamera() {
-    /// this.camera.position.set(0, 0, 1);
+    //this.camera.position.set(0, 0, 1);
     this.camera.position.set(1200, -250, 2000);
     this.scene.add(this.camera);
   }
