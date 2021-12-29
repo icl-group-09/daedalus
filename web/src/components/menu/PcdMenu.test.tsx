@@ -15,10 +15,6 @@ test("Expect PCD Menu to render", () => {
   const selectMenu = screen.getByTestId("select-menu");
   expect(pcdName.localeCompare(selectMenu.textContent!) === 0).toBeTruthy();
 
-
-  const label = screen.getByTestId("select-label");
-  expect(label.textContent).toBe("PCD");
-
 });
 
 test("Expect PCD Menu to call SetPCD on value change", () => {

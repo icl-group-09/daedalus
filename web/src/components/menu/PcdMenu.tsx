@@ -1,7 +1,6 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -18,17 +17,27 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
 
   var pcdList = ["online", "Rf10", "frame_00023"];
 
+  const menuStyle = {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  } as const;
+
+  const menuColor = {
+    background: "white"
+  } as const;
+
   return (
+    <div style={menuStyle}>
+      <div style={menuColor}>
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label" data-testid="select-label">
-          PCD
-        </InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={pcd}
-          //   label='Age'
           onChange={handleChange}
           data-testid="select-menu"
           inputProps ={{"data-testid": "menu-items"}}
@@ -43,6 +52,8 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
         </Select>
       </FormControl>
     </Box>
+    </div>
+    </div>
   );
 };
 export default PcdMenu;
