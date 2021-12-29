@@ -1,15 +1,31 @@
 import React from "react";
 import PcdMenu from "./PcdMenu";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { Dispatch, SetStateAction } from "react";
 
-test("Expect inital GPUView to call renderPCD on mount", () => {
-  const mockSetPCD: Dispatch<SetStateAction<string>> = jest.fn(
-    (value: SetStateAction<string>) => {}
-  );
+const mockSetPCD: Dispatch<SetStateAction<string>> = jest.fn(
+  (value: SetStateAction<string>) => { }
+);
 
-  render(<PcdMenu pcd="online" setPcd={mockSetPCD} />);
+const pcdName: string = "online"
+
+test("Expect PCD Menu to render", () => {
+  render(<PcdMenu pcd={pcdName} setPcd={mockSetPCD} />);
+
+  const selectMenu = screen.getByTestId("select-menu");
+  expect(pcdName.localeCompare(selectMenu.textContent!) === 0).toBeTruthy();
+
 
   const label = screen.getByTestId("select-label");
   expect(label.textContent).toBe("PCD");
+
+});
+
+test("Expect PCD Menu to call SetPCD on value change", () => {
+  render(<PcdMenu pcd={pcdName} setPcd={mockSetPCD} />);
+  const options = screen.getByTestId("menu-items") 
+
+  fireEvent.change(options, {target: {value : "Rf10"}})
+  expect(mockSetPCD).toBeCalled()
+
 });

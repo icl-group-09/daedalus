@@ -31,6 +31,7 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
           //   label='Age'
           onChange={handleChange}
           data-testid="select-menu"
+          inputProps ={{"data-testid": "menu-items"}}
         >
           {pcdList.map((pcd, i) => {
             return (
