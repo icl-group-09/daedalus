@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useFetch } from "react-async"
 
 type PcdMenuProps = {
   pcd: string;
@@ -15,7 +16,23 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
     setPcd(event.target.value as string);
   };
 
-  var pcdList = ["online", "Rf10", "frame_00023"];
+  var pcdList : string[];
+  pcdList = [];
+
+    
+  const {data, error} = useFetch(`/getFileNames`,
+  {
+    method: 'GET',
+    headers: { accept: "application/json" }
+  })
+
+  if (error) {
+    console.log(error.message)
+  }
+  if (data){
+    var names : string = (data as any)["body"]
+    pcdList = names.split(",").filter((name : string) => {name.endsWith(".pcd")})
+  }
 
   const menuStyle = {
     textAlign: "center",

@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, send_file, request
+from flask import Blueprint, send_file, request, json
 from flask.wrappers import Response
 import config
 import services.AzureService as AzureService
@@ -70,3 +70,15 @@ def upload_terrain_data() -> Response:
         upload.save(save_path)
 
     return Response(status=200)
+
+
+
+@bp.route("/getFileNames", methods=["GET"])
+def get_file_names() -> Response:
+        cloud_storage_service: CloudStorageService.CloudStorageService = (
+            AzureService.AzureService()
+        )
+        file_names = cloud_storage_service.list_file_names()
+        str_file_names = {"body" : ",".join(file_names)}
+       
+        return Response(response = json.dumps(str_file_names), status = 200, mimetype='application/json')
