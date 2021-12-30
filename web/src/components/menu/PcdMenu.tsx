@@ -14,7 +14,7 @@ type PcdMenuProps = {
 };
 
 const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
-  const handleChange = async (event: SelectChangeEvent) => {
+  const handleChange = (event: SelectChangeEvent) => {
     setPcd(event.target.value as string);
   };
 
