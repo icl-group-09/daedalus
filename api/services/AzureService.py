@@ -29,5 +29,4 @@ class AzureService(CloudStorageService):
         blobs_list = container_client.list_blobs()
         blobs_names = list(map(lambda x : x.name, blobs_list))
         return blobs_names
-            
 

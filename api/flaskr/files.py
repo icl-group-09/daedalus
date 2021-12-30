@@ -75,10 +75,11 @@ def upload_terrain_data() -> Response:
 
 @bp.route("/getFileNames", methods=["GET"])
 def get_file_names() -> Response:
-        cloud_storage_service: CloudStorageService.CloudStorageService = (
-            AzureService.AzureService()
-        )
-        file_names = cloud_storage_service.list_file_names()
-        str_file_names = {"body" : ",".join(file_names)}
-       
-        return Response(response = json.dumps(str_file_names), status = 200, mimetype='application/json')
+    cloud_storage_service: CloudStorageService.CloudStorageService = (
+        AzureService.AzureService()
+    )
+    file_names = cloud_storage_service.list_file_names()
+    str_file_names = {"body" : ",".join(file_names)}
+
+    return Response(response = json.dumps(str_file_names),
+     status = 200, mimetype='application/json')

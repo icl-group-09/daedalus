@@ -4,7 +4,9 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useFetch } from "react-async"
+import { useState } from "react";
+import { useEffect } from "react";
+
 
 type PcdMenuProps = {
   pcd: string;
@@ -12,27 +14,35 @@ type PcdMenuProps = {
 };
 
 const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = async (event: SelectChangeEvent) => {
     setPcd(event.target.value as string);
   };
 
-  var pcdList : string[];
-  pcdList = [];
 
-    
-  const {data, error} = useFetch(`/getFileNames`,
-  {
-    method: 'GET',
-    headers: { accept: "application/json" }
-  })
+  const[pcdList, setPcdList] = useState<string[]>([]);
 
-  if (error) {
-    console.log(error.message)
-  }
-  if (data){
-    var names : string = (data as any)["body"]
-    pcdList = names.split(",").filter((name : string) => {name.endsWith(".pcd")})
-  }
+  const loadInitialPcdList = async() => {
+    const response = await fetch(`/getFileNames`,
+      {
+        method: 'GET',
+        headers: { accept: "application/json" }
+      })
+
+      if (response.ok){
+        var json_names = await (response.json())
+        var names = json_names["body"]
+          .split(",")
+          .filter((name : string) => {return name.endsWith(".pcd")})
+          .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
+        setPcdList(names)
+      }
+    }
+
+  useEffect(() => {
+    loadInitialPcdList()
+  },[])
+
+
 
   const menuStyle = {
     textAlign: "center",

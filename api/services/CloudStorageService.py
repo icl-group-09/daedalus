@@ -9,5 +9,5 @@ class CloudStorageService(ABC):
 
 
     @abstractmethod
-    def list_file_names(self, filename: str, download_file_path: str):
+    def list_file_names(self, container_name:str):
         pass
