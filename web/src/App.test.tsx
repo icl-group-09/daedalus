@@ -8,8 +8,8 @@ afterEach(cleanup);
 
 test("app greets user", () => {
   const {} = render(disableGPU(<App />));
-  const welcome = screen.getByRole("heading", {
-    name: /Welcome to Daedalus!/i,
+  const welcome = screen.getByRole("link", {
+    name: /Daedalus/i,
   });
 
   expect(welcome).toBeInTheDocument();
