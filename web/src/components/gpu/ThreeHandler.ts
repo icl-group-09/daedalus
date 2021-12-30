@@ -21,10 +21,11 @@ export class ThreeHandler implements IGraphicsHandler {
   private originalPointsColors?:
     | THREE.BufferAttribute
     | THREE.InterleavedBufferAttribute;
+  private currRotation = {X: 0, Y: 0, Z: 0}
+  private isHeatMap = false;
 
   private static instance: ThreeHandler;
 
-  private currRotation = {X: 0, Y: 0, Z: 0}
 
   private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
@@ -125,7 +126,9 @@ export class ThreeHandler implements IGraphicsHandler {
         this.points.geometry.rotateY(rotateDir.Y - this.currRotation.Y);
         this.points.geometry.rotateZ(rotateDir.Z - this.currRotation.Z);
         this.currRotation = rotateDir;
-        this.renderHeatMap(this.points);
+        if (this.isHeatMap) {
+          this.renderHeatMap(this.points);
+        }
         this.renderScene();
       }
   }
@@ -174,10 +177,12 @@ export class ThreeHandler implements IGraphicsHandler {
     switch (renderType) {
       case RenderType.HM: {
         this.renderHeatMap(points);
+        this.isHeatMap = true;
         useVertexColors = true;
         break;
       }
       default: {
+        this.isHeatMap = false;
         if (useVertexColors) {
           points.geometry.setAttribute("color", this.originalPointsColors!);
         }

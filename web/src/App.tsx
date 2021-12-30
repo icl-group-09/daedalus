@@ -44,6 +44,7 @@ function App() {
      <NavBar pcd={pcd} setPcd={setPcd}></NavBar>
       <div className = "App">
         <Sidebar 
+          pointCloudType={pointCloudType}
           setPointCloudType={setPointCloudType} 
           r = {r}
           setR={setR} 

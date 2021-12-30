@@ -2,64 +2,36 @@ import React from "react";
 import PcdMenu from "../menu/PcdMenu";
 import Slider from "react-input-slider";
 import { RenderType } from "../gpu/RenderType";
+import { RotationDir } from "../gpu/Rotate";
 import { useState } from "react";
+import Switch from "react-switch";
 
 import "./Sidebar.css"
 
 type SideBarProps = {
+    pointCloudType: RenderType;
     setPointCloudType: React.Dispatch<React.SetStateAction<RenderType>>;
-    r: {
-        X: number;
-        Y: number;
-        Z: number;
-    }
-    setR: React.Dispatch<React.SetStateAction<{
-    X: number;
-    Y: number;
-    Z: number;
-        }>>;
+    r: RotationDir;
+    setR: React.Dispatch<React.SetStateAction<RotationDir>>;
     pointSize: number;
     setPointSize: React.Dispatch<React.SetStateAction<number>>;
 }
 
 
-function Sidebar({setPointCloudType, r, setR, pointSize, setPointSize}: SideBarProps){
-
-    const ClickPCD = () => {
-      setPointCloudType(RenderType.PCD);
-    };
-  
-    const ClickHM = () => {
-      setPointCloudType(RenderType.HM);
-    };
-
-    const rotateX = () => {
-      setR({X: Math.PI/2, Y: 0, Z: 0})
-    }
-
-    const rotateXBack = () => {
-      setR({X: -Math.PI/2, Y: 0, Z: 0})
-    }
-
-    const rotateY = () => {
-      setR( {X: 0, Y: Math.PI/2, Z: 0})
-    }
-
-    const rotateYBack = () => {
-      setR( {X: 0, Y: -Math.PI/2, Z: 0})
-    }
-  
-    const cssCenter = {
-      textAlign: "center",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-    } as const;
-  
+function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPointSize}: SideBarProps){
 
     const [menuVisibility, setMenuVisibility] = useState(true);
     const [visibilityClass, setVisibilityClass] = useState("hide")
+  
+    const ClickHM = () => {
+        if (pointCloudType == RenderType.HM) {
+            setPointCloudType(RenderType.PCD);
+        } else {
+            setPointCloudType(RenderType.HM);
+        }
+      
+    };
+
 
     const toggleMenu = () => {
         setMenuVisibility(!menuVisibility)
@@ -75,12 +47,23 @@ function Sidebar({setPointCloudType, r, setR, pointSize, setPointSize}: SideBarP
         <div id = "sidebar" className={visibilityClass}>
             <button id="showButton" onClick={toggleMenu}>Tools</button>
             <div id="toolsContainer">
-                <div id="tools"> 
-                    <div>
-                        <button onClick={ClickPCD}>Show Point Cloud</button>
-                        <button onClick={ClickHM}>Show Heat Map</button>
-                    </div>
-                    <p> Rotate X: {Math.round(r.X / Math.PI * 180)} </p>
+                <div id="tools">
+                    
+                    <h5> Toggle Heat Map </h5> 
+                    <label>
+                        <Switch onChange={ClickHM} checked={pointCloudType === RenderType.HM} onColor="#86d3ff"
+                        onHandleColor="#2693e6"
+                        handleDiameter={20}
+                        uncheckedIcon={false}
+                        checkedIcon={false}
+                        boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                        activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                        height={15}
+                        width={35}/>
+                    </label>
+                    
+                    <h5> Rotation </h5>
+                    <p> x: {Math.round(r.X / Math.PI * 180)} </p>
                     <Slider
                         axis="x"
                         xmax={2 * Math.PI}
@@ -89,7 +72,7 @@ function Sidebar({setPointCloudType, r, setR, pointSize, setPointSize}: SideBarP
                         x={r.X}
                         onChange={({x}) => setR((oldR) => ({X: x, Y: oldR.Y, Z: oldR.Z}))}
                     />
-                    <p> Rotate Y: {Math.round(r.Y / Math.PI * 180)} </p>
+                    <p> y: {Math.round(r.Y / Math.PI * 180)} </p>
                     <Slider
                         axis="x"
                         xmax={2 * Math.PI}
