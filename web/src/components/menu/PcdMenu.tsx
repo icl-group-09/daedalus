@@ -1,9 +1,8 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
-import Box from "@mui/material/Box";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropDownButton from 'react-bootstrap/DropDownButton';
+import { eventNames } from "cluster";
 
 type PcdMenuProps = {
   pcd: string;
@@ -11,48 +10,26 @@ type PcdMenuProps = {
 };
 
 const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
-  const handleChange = (event: SelectChangeEvent) => {
-    setPcd(event.target.value as string);
+  const handleChange = (event: string | null, e: React.SyntheticEvent<unknown>) => {
+    setPcd(event!);
   };
 
   var pcdList = ["online", "Rf10", "frame_00023"];
 
-  const menuStyle = {
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  } as const;
-
-  const menuColor = {
-    background: "white"
-  } as const;
-
   return (
-    <div style={menuStyle}>
-      <div style={menuColor}>
-    <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        {/* <InputLabel id="demo-simple-select-label">PCD</InputLabel> */}
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={pcd}
-          label="Age"
-          onChange={handleChange}
-        >
-          {pcdList.map((pcd, i) => {
-            return (
-              <MenuItem key={i} value={pcd}>
-                {pcd}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-    </Box>
-    </div>
+    <div>
+      <DropDownButton 
+      title={pcd}
+      onSelect={handleChange}
+      >
+        {pcdList.map((pcd, i) => {
+             return (
+               <Dropdown.Item key={i} eventKey={pcd} value={pcd}>
+                 {pcd}
+               </Dropdown.Item>
+             );
+           })}
+      </DropDownButton>
     </div>
   );
 };

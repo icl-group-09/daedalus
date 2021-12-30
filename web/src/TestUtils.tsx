@@ -1,5 +1,5 @@
 import React from "react";
-import { EnableGPUContext } from "./components/pages/Welcome";
+import { EnableGPUContext } from "./App";
 
 export const disableGPU = (comp: JSX.Element) => {
   return (

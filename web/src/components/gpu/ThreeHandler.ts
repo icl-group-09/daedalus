@@ -3,12 +3,7 @@ import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
 import { RotationDir } from "./Rotate";
-
-export interface IGraphicsHandler {
-  renderPCD(pcdFilename: String, mode: RenderType, pcdPointSize: number): void;
-  resizeRenderer(width: number, height: number): void;
-  rotatePCD(rotateDir: RotationDir): void;
-}
+import { IGraphicsHandler } from "./IGraphicsHandler"
 
 export class ThreeHandler implements IGraphicsHandler {
   private readonly renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
@@ -28,6 +23,8 @@ export class ThreeHandler implements IGraphicsHandler {
     | THREE.InterleavedBufferAttribute;
 
   private static instance: ThreeHandler;
+
+  private currRotation = {X: 0, Y: 0, Z: 0}
 
   private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
@@ -124,9 +121,10 @@ export class ThreeHandler implements IGraphicsHandler {
 
   rotatePCD(rotateDir: RotationDir) {
       if (this.points !== undefined) {
-        this.points.geometry.rotateX(rotateDir.X);
-        this.points.geometry.rotateY(rotateDir.Y);
-        this.points.geometry.rotateZ(rotateDir.Z);
+        this.points.geometry.rotateX(rotateDir.X - this.currRotation.X);
+        this.points.geometry.rotateY(rotateDir.Y - this.currRotation.Y);
+        this.points.geometry.rotateZ(rotateDir.Z - this.currRotation.Z);
+        this.currRotation = rotateDir;
         this.renderHeatMap(this.points);
         this.renderScene();
       }

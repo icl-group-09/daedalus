@@ -1,5 +1,5 @@
 import React from "react";
-import { IGraphicsHandler } from "./ThreeHandler";
+import { IGraphicsHandler } from "./IGraphicsHandler";
 import { useEffect } from "react";
 import {RenderType} from "./RenderType";
 import { RotationDir } from "./Rotate";
