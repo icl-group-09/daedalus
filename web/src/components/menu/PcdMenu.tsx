@@ -1,7 +1,6 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropDownButton from 'react-bootstrap/DropDownButton';
 import { eventNames } from "cluster";
 
 type PcdMenuProps = {
@@ -18,18 +17,20 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
 
   return (
     <div>
-      <DropDownButton 
-      title={pcd}
-      onSelect={handleChange}
-      >
-        {pcdList.map((pcd, i) => {
+      <Dropdown onSelect={handleChange}>
+        <Dropdown.Toggle variant="dark">
+          {pcd}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {pcdList.map((pcd, i) => {
              return (
                <Dropdown.Item key={i} eventKey={pcd} value={pcd}>
                  {pcd}
                </Dropdown.Item>
              );
            })}
-      </DropDownButton>
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   );
 };

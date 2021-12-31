@@ -69,4 +69,4 @@ def upload_terrain_data() -> Response:
 
         upload.save(save_path)
 
-    return Response(status=200)
+    return Response('upload success', status=200)

@@ -14,6 +14,7 @@ import {
   // Link
 } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
+import Upload from "./components/upload/Upload";
 
 export const EnableGPUContext = createContext(true);
 
@@ -35,13 +36,17 @@ function App() {
   const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
+  const [showUpload, setShowUpload] = useState(false);
+  
+
   const graphicsHandler = !useContext(EnableGPUContext)
     ? DUMMY_GRAPHICS_HANDLER
     : ThreeHandler.getInstance(w, h, canvas);
 
   return (
     <Router>
-     <NavBar pcd={pcd} setPcd={setPcd}></NavBar>
+     <NavBar pcd={pcd} setPcd={setPcd} setShowUpload={setShowUpload}></NavBar>
+     <Upload show={showUpload} setShowUpload={setShowUpload}/> 
       <div className = "App">
         <Sidebar 
           pointCloudType={pointCloudType}
