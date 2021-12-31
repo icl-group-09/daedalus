@@ -47,7 +47,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
         <div id = "sidebar" className={visibilityClass}>
             <button id="showButton" onClick={toggleMenu}>Tools</button>
             <div id="toolsContainer">
-                <div id="tools">
+                <div id="tools" className={visibilityClass}>
                     
                     <h5> Toggle Heat Map </h5> 
                     <label>

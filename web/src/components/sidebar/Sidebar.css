@@ -8,18 +8,38 @@
 }
 
 #toolsContainer {
-  width: 20vw;
+  width: 300px;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
 #tools {
+  transition: transform .3s;
   padding-top: 4vh;
   margin-left: 20px;
 }
 
+#tools.hide {
+  display: none;
+}
+
+#tools.show {
+  display: block;
+}
+
 #sidebar.hide {
-    transform: translate3d(-20vw, 0, 0);
+    transform: translate3d(-300px, 0, 0);
+}
+
+@media screen and (max-width: 583px) { 
+  #sidebar {
+    top: 78px !important;
+  }
+}
+@media screen and (max-width: 509px) { 
+  #sidebar {
+    top: 94px !important;
+  }
 }
 
 #sidebar.show {
@@ -31,10 +51,11 @@ button {
 }
 
 #showButton {
-  padding: 5px;
+  padding: 10px;
+  border-radius: 7px 7px 0 0;
   position: absolute;
   top: 5vh;
-  left: 20vw;
+  left: 300px;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   -moz-transform:rotate(90deg); 
