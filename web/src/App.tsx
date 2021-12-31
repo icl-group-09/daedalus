@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
 import Upload from "./components/upload/Upload";
+import About from "./components/about/About";
 
 export const EnableGPUContext = createContext(true);
 
@@ -37,6 +38,7 @@ function App() {
   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
   const [showUpload, setShowUpload] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   
 
   const graphicsHandler = !useContext(EnableGPUContext)
@@ -45,8 +47,9 @@ function App() {
 
   return (
     <Router>
-     <NavBar pcd={pcd} setPcd={setPcd} setShowUpload={setShowUpload}></NavBar>
+     <NavBar pcd={pcd} setPcd={setPcd} setShowUpload={setShowUpload} setShowAbout={setShowAbout}></NavBar>
      <Upload show={showUpload} setShowUpload={setShowUpload}/> 
+     <About show={showAbout} setShowAbout={setShowAbout}/> 
       <div className = "App">
         <Sidebar 
           pointCloudType={pointCloudType}

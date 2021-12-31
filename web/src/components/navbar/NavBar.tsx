@@ -12,9 +12,10 @@ type NavBarProps = {
   pcd: string;
   setPcd: React.Dispatch<React.SetStateAction<string>>;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowAbout: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function NavBar ({ pcd, setPcd, setShowUpload }: NavBarProps) {
+function NavBar ({ pcd, setPcd, setShowUpload, setShowAbout }: NavBarProps) {
 
   return (
     <Navbar bg="black" expand="lg">
@@ -22,7 +23,7 @@ function NavBar ({ pcd, setPcd, setShowUpload }: NavBarProps) {
           <Row id="basic-navbar-nav" className="w-100">
             <Col className = "d-flex ms-4">
                 <Navbar.Brand href="#home">Daedalus</Navbar.Brand>
-                <Nav.Link href="#home">Home</Nav.Link>
+                <Nav.Link onClick={() => setShowAbout(true)}>About</Nav.Link>
                 <Nav.Link onClick={() => setShowUpload(true)}>Upload</Nav.Link>
             </Col>
             <Col className="d-flex justify-content-center">
