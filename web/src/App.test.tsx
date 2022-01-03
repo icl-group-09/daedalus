@@ -8,4 +8,4 @@ afterEach(cleanup);
 
 test("app greets user", () => {
   expect(true).toBeTruthy();
-}
+});
