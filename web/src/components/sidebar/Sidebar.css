@@ -19,6 +19,14 @@
   margin-left: 20px;
 }
 
+#tools label {
+  margin: 10px 0 15px 0;
+}
+
+#tools span {
+  padding-bottom: 10px;
+}
+
 #tools.hide {
   display: none;
 }

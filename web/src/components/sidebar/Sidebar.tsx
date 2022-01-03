@@ -63,7 +63,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                     </label>
                     
                     <h5> Rotation </h5>
-                    <p> x: {Math.round(r.X / Math.PI * 180)} </p>
+                    <span> x: {Math.round(r.X / Math.PI * 180)} </span><br></br>
                     <Slider
                         axis="x"
                         xmax={2 * Math.PI}
@@ -71,8 +71,8 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         xmin={0.0}
                         x={r.X}
                         onChange={({x}) => setR((oldR) => ({X: x, Y: oldR.Y, Z: oldR.Z}))}
-                    />
-                    <p> y: {Math.round(r.Y / Math.PI * 180)} </p>
+                    /><br></br>
+                    <span> y: {Math.round(r.Y / Math.PI * 180)} </span><br></br>
                     <Slider
                         axis="x"
                         xmax={2 * Math.PI}
@@ -80,8 +80,8 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         xmin={0.0}
                         x={r.Y}
                         onChange={({x}) => setR((oldR) => ({X: oldR.X, Y: x, Z: oldR.Z}))}
-                    />
-                    <p> Point Size: {pointSize}</p>
+                    /><br></br>
+                    <span> Point Size: {Math.round(pointSize * 10000) / 10000}</span>
                     <Slider
                         axis="x"
                         xmax={0.1}

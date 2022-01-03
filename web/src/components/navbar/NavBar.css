@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap');
+
 .nav-link {
     color: #fff !important;
   }
@@ -7,4 +9,5 @@
 
 .navbar-text {
     color: #fff !important;
+    font-family: 'Chakra Petch', sans-serif;
 }
