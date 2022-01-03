@@ -25,6 +25,7 @@ export class ThreeHandler implements IGraphicsHandler {
 
   private readonly scene: THREE.Scene = new THREE.Scene();
   private camera: THREE.PerspectiveCamera;
+  private renderType: RenderType;
   private currentFile?: String;
   private points?: THREE.Points<
     THREE.BufferGeometry,
@@ -41,40 +42,43 @@ export class ThreeHandler implements IGraphicsHandler {
     height: number,
     canvas: HTMLCanvasElement
   ) {
+    this.renderType = RenderType.PCD;
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
-
-    new THREE.CubeTextureLoader().setPath("/").load(
-      // urls of images used in the cube texture
-      [
-        "purplenebula_ft.png",
-        "purplenebula_bk.png",
-        "purplenebula_lf.png",
-        "purplenebula_rt.png",
-        "purplenebula_up.png",
-        "purplenebula_dn.png",
-      ],
-      // what to do when loading is over
-      cubeTexture => {
-        // Geometry
-        const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
-        // Material
-        var material = new THREE.MeshBasicMaterial({
-          // CUBE TEXTURE can be used with
-          // the environment map property of
-          // a material.
-          envMap: cubeTexture,
-        });
-        // Mesh
-        var mesh = new THREE.Mesh(skybox, material);
-        this.scene.add(mesh);
-        // CUBE TEXTURE is also an option for a background
-        this.scene.background = cubeTexture;
-        this.renderer.render(this.scene, this.camera);
-      }
+    // this.loadHeightMap();
+    new THREE.CubeTextureLoader()
+    .setPath('/')
+    .load(
+        // urls of images used in the cube texture
+        [
+            'purplenebula_ft.png',
+            'purplenebula_bk.png',
+            'purplenebula_lf.png',
+            'purplenebula_rt.png',
+            'purplenebula_up.png',
+            'purplenebula_dn.png'
+        ],
+        // what to do when loading is over
+         (cubeTexture) => {
+            // Geometry
+            const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
+            // Material
+            var material = new THREE.MeshBasicMaterial({
+                // CUBE TEXTURE can be used with
+                // the environment map property of
+                // a material.
+                envMap: cubeTexture
+            });
+            // Mesh
+            var mesh = new THREE.Mesh(skybox, material);
+            this.scene.add(mesh);
+            // CUBE TEXTURE is also an option for a background
+            this.scene.background = cubeTexture;
+            this.renderer.render(this.scene, this.camera);
+        }
     );
   }
 
@@ -145,7 +149,9 @@ export class ThreeHandler implements IGraphicsHandler {
         this.points.geometry.rotateX(rotateDir.X);
         this.points.geometry.rotateY(rotateDir.Y);
         this.points.geometry.rotateZ(rotateDir.Z);
-        this.renderHeatMap(this.points);
+        if (this.renderType === RenderType.HM) {
+          this.renderHeatMap(this.points);
+        }
         this.renderScene();
       }
   }
@@ -161,6 +167,7 @@ export class ThreeHandler implements IGraphicsHandler {
     pcdPointSize: number,
     cb: () => void
   ) {
+    this.renderType = renderType;
     if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
@@ -254,6 +261,7 @@ export class ThreeHandler implements IGraphicsHandler {
     points.geometry.center();
   }
 
+
   private renderHeatMap(
     points: THREE.Points<
       THREE.BufferGeometry,
@@ -289,6 +297,34 @@ export class ThreeHandler implements IGraphicsHandler {
       new THREE.Float32BufferAttribute(colors, 3)
     );
   }
+
+  private loadHeightMap() {
+    var img = new Image()
+    img.onload = function () {
+      var canvas = document.createElement( 'canvas' );
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var context = canvas.getContext( '2d' );
+        var size = img.width * img.height;
+        var data = new Float32Array( size );
+        context!.drawImage(img,0,0);
+        for ( var i = 0; i < size; i ++ ) {
+            data[i] = 0
+        }
+        var imgd = context!.getImageData(0, 0, img.width, img.height);
+        var pix = imgd.data;
+        var j=0;
+        for (var m = 0; m<pix.length; m+=4) {
+            var all = pix[m]+pix[m+1]+pix[m+2];
+            data[j++] = all/(12);
+        }
+        console.log("hi")
+        return data;
+    }
+    img.src = "/thing2.tif"
+  }
+
+  
 
   private renderScene() {
     this.renderer.render(this.scene, this.camera);
