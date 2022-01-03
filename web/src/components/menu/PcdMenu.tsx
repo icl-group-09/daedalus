@@ -1,7 +1,7 @@
 import './PcdMenu.css'
 import React from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type PcdMenuProps = {
   pcd: string;
@@ -27,7 +27,7 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
     fetchFunc = testFunc;
   }
 
-  
+  useEffect(() => {
     fetchFunc(`/getFileNames`,
       {
         method: 'GET',
@@ -38,10 +38,12 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
           .split(",")
           .filter((name : string) => {return name.endsWith(".pcd")})
           .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
-        setPcdList(names)
+         setPcdList(names)
       }).catch((error) => {
           console.log('Error: ', error)
       })
+  }, [fetchFunc])
+  console.log("AHH")
 
   return (
     <div>
