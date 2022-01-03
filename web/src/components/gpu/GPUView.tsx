@@ -1,5 +1,5 @@
 import React from "react";
-import { IGraphicsHandler } from "./ThreeHandler";
+import { IGraphicsHandler } from "./IGraphicsHandler";
 import { useEffect, useRef } from "react";
 import { RenderType } from "./RenderType";
 import { RotationDir } from "./Rotate";
@@ -32,17 +32,16 @@ const GPUView = ({
   const gpuViewRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
-    // Run the first time this component renders
-    if (gpuViewRef.current!.children.length === 0) {
+     if (gpuViewRef.current!.children.length === 0) {
+      // Run the first time this component renders
       gpuViewRef.current!.appendChild(canvas);
-    }
-    // NOTE: I uncommented this line so that the test passes (I could not push)
+     }
     graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-    // graphicsHandler.resizeRenderer(width, height);
+    graphicsHandler.resizeRenderer(width, height);
   });
+
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
-
   }, [graphicsHandler, rotateDir]);
 
   // For some reason when we press the button, the request is sent twice

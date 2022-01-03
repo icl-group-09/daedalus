@@ -4,28 +4,17 @@ import { PCDLoader } from "three/examples/jsm/loaders/PCDLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RenderType } from "./RenderType";
 import { RotationDir } from "./Rotate";
-
-export interface IGraphicsHandler {
-  uploadAsToGTLF(
-    pcdFilename: string,
-    mode: RenderType,
-    pcdPointSize: number,
-    cb: (path: string) => void
-  ): void;
-  renderPCD(pcdFilename: string, mode: RenderType, pcdPointSize: number): void;
-  resizeRenderer(width: number, height: number): void;
-  rotatePCD(rotateDir: RotationDir): void;
-}
+import { IGraphicsHandler } from "./IGraphicsHandler"
 
 export class ThreeHandler implements IGraphicsHandler {
-  private readonly renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-  });
 
-  private readonly scene: THREE.Scene = new THREE.Scene();
-  private camera: THREE.PerspectiveCamera;
-  private renderType: RenderType;
+  // Renderer Objects 
+  private readonly renderer: THREE.WebGLRenderer;
+  private readonly scene: THREE.Scene;
+  private readonly controls; 
+  private readonly camera: THREE.PerspectiveCamera;
+
+  // Current Scene Properties
   private currentFile?: String;
   private points?: THREE.Points<
     THREE.BufferGeometry,
@@ -34,99 +23,54 @@ export class ThreeHandler implements IGraphicsHandler {
   private originalPointsColors?:
     | THREE.BufferAttribute
     | THREE.InterleavedBufferAttribute;
+  private currRotation = {X: 0, Y: 0, Z: 0}
+  private isHeatMap = false;
 
+  // Singleton Three Handler
   private static instance: ThreeHandler;
 
-  private constructor(
-    width: number,
-    height: number,
-    canvas: HTMLCanvasElement
-  ) {
-    this.renderType = RenderType.PCD;
-    this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
-    this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
-    this.initCamera();
-    this.initRenderer(width, height);
-    this.initControls();
-    // this.loadHeightMap();
-    new THREE.CubeTextureLoader()
-    .setPath('/')
-    .load(
-        // urls of images used in the cube texture
-        [
-            'purplenebula_ft.png',
-            'purplenebula_bk.png',
-            'purplenebula_lf.png',
-            'purplenebula_rt.png',
-            'purplenebula_up.png',
-            'purplenebula_dn.png'
-        ],
-        // what to do when loading is over
-         (cubeTexture) => {
-            // Geometry
-            const skybox = new THREE.BoxGeometry(10000, 10000, 10000);
-            // Material
-            var material = new THREE.MeshBasicMaterial({
-                // CUBE TEXTURE can be used with
-                // the environment map property of
-                // a material.
-                envMap: cubeTexture
-            });
-            // Mesh
-            var mesh = new THREE.Mesh(skybox, material);
-            this.scene.add(mesh);
-            // CUBE TEXTURE is also an option for a background
-            this.scene.background = cubeTexture;
-            this.renderer.render(this.scene, this.camera);
-        }
-    );
-  }
-
-  private createPathStrings(filename: String) {
-    const basePath = "/";
-    const baseFilename = basePath + filename;
-    const fileType = ".png";
-    const sides = ["ft", "bk", "up", "dn", "rt", "lf"];
-    const pathStrings = sides.map(side => {
-      return baseFilename + "_" + side + fileType;
-    });
-    return pathStrings;
-  }
-
-  private createMaterialArray(filename: String) {
-    const skyboxImagepaths = this.createPathStrings(filename);
-    const materialArray = skyboxImagepaths.map(image => {
-      let texture = new THREE.TextureLoader().load(image);
-      return new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.BackSide,
-      }); // <---
-    });
-    return materialArray;
-  }
-
-  private initSkyBox() {
-    const materialArray = this.createMaterialArray("purplenebula");
-    console.log(materialArray);
-    const skyboxGeo = new THREE.BoxGeometry(10000, 10000, 10000);
-    const skybox = new THREE.Mesh(skyboxGeo, materialArray);
-    this.scene.add(skybox);
-  }
-
-  public static getInstance(
-    width: number,
-    height: number,
-    canvas: HTMLCanvasElement
-  ): ThreeHandler {
+  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
     if (!ThreeHandler.instance) {
       ThreeHandler.instance = new ThreeHandler(width, height, canvas);
     }
     return ThreeHandler.instance;
   }
 
+  private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
+    this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
+    this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.scene = new THREE.Scene();
+    this.initSkybox()
+    this.initCamera();
+    this.initRenderer(width, height);
+    this.initControls();
+    this.renderScene();
+  }
+
+  private initSkybox() {
+    let geometry = new THREE.BoxGeometry(25,25,25);
+    // Must be right, left, up, down, front, back
+    const images = [
+      'highresbox_rt.png',
+      'highresbox_lf.png',
+      'highresbox_up.png',
+      'highresbox_dn.png',
+      'highresbox_ft.png',
+      'highresbox_bk.png'
+      
+    ]
+    const cubeMaterials = images.map(image => {
+      return new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(image), side: THREE.DoubleSide })
+    })
+    const cube = new THREE.Mesh( geometry, cubeMaterials );
+    this.scene.add(cube);
+  }
+
+
   private initCamera() {
-    /// this.camera.position.set(0, 0, 1);
     this.camera.position.set(1200, -250, 2000);
+    this.controls.update();
     this.scene.add(this.camera);
   }
 
@@ -136,29 +80,32 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   private initControls() {
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.addEventListener("change", () => {
+    this.controls.addEventListener("change", () => {
       this.renderScene();
     });
-    controls.minDistance = 0.5;
-    controls.maxDistance = 10;
+    this.controls.minDistance = 0.5;
+    this.controls.maxDistance = 10;
+    this.controls.update();
   }
 
   rotatePCD(rotateDir: RotationDir) {
-      if (this.points !== undefined) {
-        this.points.geometry.rotateX(rotateDir.X);
-        this.points.geometry.rotateY(rotateDir.Y);
-        this.points.geometry.rotateZ(rotateDir.Z);
-        if (this.renderType === RenderType.HM) {
-          this.renderHeatMap(this.points);
-        }
-        this.renderScene();
+    if (this.points !== undefined) {
+      this.points.geometry.rotateX(rotateDir.X - this.currRotation.X);
+      this.points.geometry.rotateY(rotateDir.Y - this.currRotation.Y);
+      this.points.geometry.rotateZ(rotateDir.Z - this.currRotation.Z);
+      this.currRotation = rotateDir;
+      if (this.isHeatMap) {
+        this.renderHeatMap(this.points);
       }
+      this.renderScene();
+    }
   }
 
   resizeRenderer(width: number, height: number) {
     this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+    this.renderScene();
   }
 
   private createModelAnd(
@@ -167,7 +114,6 @@ export class ThreeHandler implements IGraphicsHandler {
     pcdPointSize: number,
     cb: () => void
   ) {
-    this.renderType = renderType;
     if (this.points === undefined || pcdFilename !== this.currentFile) {
       this.currentFile = pcdFilename;
       const loader = new PCDLoader();
@@ -188,6 +134,7 @@ export class ThreeHandler implements IGraphicsHandler {
       cb();
     }
   }
+
 
   uploadAsToGTLF(
     pcdFilename: string,
@@ -243,10 +190,12 @@ export class ThreeHandler implements IGraphicsHandler {
     switch (renderType) {
       case RenderType.HM: {
         this.renderHeatMap(points);
+        this.isHeatMap = true;
         useVertexColors = true;
         break;
       }
       default: {
+        this.isHeatMap = false;
         if (useVertexColors) {
           points.geometry.setAttribute("color", this.originalPointsColors!);
         }

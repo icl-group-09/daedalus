@@ -1,85 +1,64 @@
+import './PcdMenu.css'
 import React from "react";
-import { Dispatch, SetStateAction } from "react";
-import Box from "@mui/material/Box";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Dropdown from 'react-bootstrap/Dropdown';
 import { useState } from "react";
-import { useEffect } from "react";
-
 
 type PcdMenuProps = {
   pcd: string;
-  setPcd: Dispatch<SetStateAction<string>>;
+  changePCD: (newPCD: string) => void;
+  className: string;
 };
 
-const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
-  const handleChange = (event: SelectChangeEvent) => {
-    setPcd(event.target.value as string);
+const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
+  const handleChange = (event: string | null, e: React.SyntheticEvent<unknown>) => {
+    changePCD(event!);
   };
 
 
   const[pcdList, setPcdList] = useState<string[]>([]);
 
-  const loadInitialPcdList = async() => {
-    const response = await fetch(`/getFileNames`,
+  
+  const testFunc = ((input: RequestInfo, init?: RequestInit | undefined) => { return new Promise<Response>((resolve, reject) => {}); })
+
+  let fetchFunc = testFunc;
+  try {
+    fetchFunc = fetch;
+  } catch (e) {
+    fetchFunc = testFunc;
+  }
+
+  
+    fetchFunc(`/getFileNames`,
       {
         method: 'GET',
         headers: { accept: "application/json" }
-      })
-
-      if (response.ok){
-        var json_names = await (response.json())
+      }).then((response) => response.json())
+      .then((json_names)=> {
         var names = json_names["body"]
           .split(",")
           .filter((name : string) => {return name.endsWith(".pcd")})
           .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
         setPcdList(names)
-      }
-    }
-
-  useEffect(() => {
-    loadInitialPcdList()
-  },[])
-
-
-
-  const menuStyle = {
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  } as const;
-
-  const menuColor = {
-    background: "white",
-  } as const;
+      }).catch((error) => {
+          console.log('Error: ', error)
+      })
 
   return (
-    <div style={menuStyle}>
-      <div style={menuColor}>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl fullWidth>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={pcd}
-              onChange={handleChange}
-              data-testid="select-menu"
-              inputProps ={{"data-testid": "menu-items"}}
-            >
-              {pcdList.map((pcd, i) => {
-                return (
-                  <MenuItem key={i} value={pcd}>
-                    {pcd}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </Box>
-        </div>
+    <div>
+      <Dropdown onSelect={handleChange} className={className}>
+        <Dropdown.Toggle variant="dark" className={"w-100 menu-button"}>
+          {pcd}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {pcdList.map((pcd, i) => {
+             return (
+               <Dropdown.Item key={i} eventKey={pcd} value={pcd}>
+                 {pcd}
+               </Dropdown.Item>
+             );
+           })}
+        </Dropdown.Menu>
+      </Dropdown>
     </div>
   );
 };

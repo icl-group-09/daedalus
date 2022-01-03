@@ -1,60 +1,86 @@
 import React from "react";
 import "./App.css";
-import { useState, createContext } from "react";
-import PcdMenu from "./components/menu/PcdMenu";
-import Slider from "react-input-slider";
-import Upload from "./components/pages/Upload"
-import Welcome from "./components/pages/Welcome";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link
-} from "react-router-dom";
+// import Upload from "./components/pages/Upload"
+import NavBar from "./components/navbar/NavBar";
+import GPUView from "./components/gpu/GPUView";
+import Sidebar from "./components/sidebar/Sidebar"
+import { ThreeHandler } from "./components/gpu/ThreeHandler";
+import { RenderType } from "./components/gpu/RenderType";
+import { DUMMY_GRAPHICS_HANDLER } from "./components/gpu/IGraphicsHandler";
+import { useState, createContext, useContext } from "react";
+import Upload from "./components/upload/Upload";
+import About from "./components/about/About";
+
+const canvas: HTMLCanvasElement = document.createElement("canvas");
+
+function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>, 
+  setH: React.Dispatch<React.SetStateAction<number>>) {
+  setW(window.innerWidth);
+  setH(window.innerHeight);
+}
 
 export const EnableGPUContext = createContext(true);
 
 function App() {
-  // These are here just for the demo. Will be removed
+
   const [pcd, setPcd] = useState("online");
   const [pointSize, setPointSize] = useState(0.003);
+  const [w, setW] = useState(window.innerWidth);
+  const [h, setH] = useState(window.innerHeight);
+  const [r, setR] = useState({X: 0, Y: 0, Z: 0});
+  const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
+  const [exporting, setExporting] = useState(false);
+  window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
-  (window as any).setPcd = (pcdName: string) => {
-    setPcd(pcdName);
-  };
+  const [showUpload, setShowUpload] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+
+  const changePCD = (newPCD: string) => {
+    setPcd(newPCD);
+    setR({X: 0, Y: 0, Z: 0});
+    setPointCloudType(RenderType.PCD);
+    setPointSize(0.003);
+  }
+  
+
+  const graphicsHandler = !useContext(EnableGPUContext)
+    ? DUMMY_GRAPHICS_HANDLER
+    : ThreeHandler.getInstance(w, h, canvas);
 
   return (
-    <Router>
-      <div className = "App">
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Welcome</Link>
-            </li>
-            <li>
-              <Link to="/upload">Upload</Link>
-            </li>
-          </ul>
-          </div>
-     
+    <div>
+     <NavBar 
+        pcd={pcd} 
+        changePCD={changePCD} 
+        setShowUpload={setShowUpload} 
+        setShowAbout={setShowAbout}
+        setExporting={setExporting}
+        />
 
-        <div className = "content">
-          <Routes>
-            <Route path="/" element={<Welcome/>} />
-            <Route path="/upload" element={<Upload/>} />
-          </Routes>
-        </div>
-        <PcdMenu pcd={pcd} setPcd={setPcd} />
-        <Slider
-          axis="x"
-          xmax={0.1}
-          xstep={0.0005}
-          xmin={0.001}
-          x={pointSize}
-          onChange={({ x }) => setPointSize(x)}
+     <Upload show={showUpload} setShowUpload={setShowUpload}/> 
+     <About show={showAbout} setShowAbout={setShowAbout}/> 
+      <div className = "App">
+        <Sidebar 
+          pointCloudType={pointCloudType}
+          setPointCloudType={setPointCloudType} 
+          r = {r}
+          setR={setR} 
+          pointSize={pointSize} 
+          setPointSize={setPointSize}/> 
+
+        <GPUView
+          width={w}
+          height={h}
+          graphicsHandler={graphicsHandler}
+          pcdFilename={pcd}
+          pcdRenderType={pointCloudType}
+          pcdPointSize={pointSize}
+          canvas={canvas}
+          rotateDir={r}
+          exporting={exporting}
         />
       </div>
-    </Router>
+    </div>
   );
 }
 

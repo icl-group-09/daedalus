@@ -7,5 +7,10 @@ import { disableGPU } from "./TestUtils";
 afterEach(cleanup);
 
 test("app greets user", () => {
-  expect(true).toBeTruthy();
+  const {} = render(disableGPU(<App />));
+  const welcome = screen.getByRole("link", {
+    name: /Daedalus/i,
+  });
+
+  expect(welcome).toBeInTheDocument();
 });

@@ -121,7 +121,7 @@ def upload_terrain_data() -> Response:
 
     cloud_storage_service.upload_file(pcdname, pcd_path)
 
-    return Response(status=200)
+    return Response('upload success', status=200)
 
 
 
