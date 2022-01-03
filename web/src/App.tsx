@@ -39,6 +39,13 @@ function App() {
 
   const [showUpload, setShowUpload] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+
+  const changePCD = (newPCD: string) => {
+    setPcd(newPCD);
+    setR({X: 0, Y: 0, Z: 0});
+    setPointCloudType(RenderType.PCD);
+    setPointSize(0.003);
+  }
   
 
   const graphicsHandler = !useContext(EnableGPUContext)
@@ -47,7 +54,7 @@ function App() {
 
   return (
     <Router>
-     <NavBar pcd={pcd} setPcd={setPcd} setShowUpload={setShowUpload} setShowAbout={setShowAbout}></NavBar>
+     <NavBar pcd={pcd} changePCD={changePCD} setShowUpload={setShowUpload} setShowAbout={setShowAbout}></NavBar>
      <Upload show={showUpload} setShowUpload={setShowUpload}/> 
      <About show={showAbout} setShowAbout={setShowAbout}/> 
       <div className = "App">

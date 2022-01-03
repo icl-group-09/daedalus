@@ -10,27 +10,27 @@ import React from "react";
 
 type NavBarProps = {
   pcd: string;
-  setPcd: React.Dispatch<React.SetStateAction<string>>;
+  changePCD: (newPCD: string) => void;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
   setShowAbout: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function NavBar ({ pcd, setPcd, setShowUpload, setShowAbout }: NavBarProps) {
+function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout }: NavBarProps) {
 
   return (
     <Navbar bg="black" expand="lg">
           {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */} 
           <Row id="basic-navbar-nav" className="w-100">
-            <Col className = "d-flex ms-4">
+            <Col md={4} sm={12} xs={12} className = "d-flex flex-nowrap ps-4">
                 <Navbar.Brand href="#home">Daedalus</Navbar.Brand>
                 <Nav.Link onClick={() => setShowAbout(true)}>About</Nav.Link>
                 <Nav.Link onClick={() => setShowUpload(true)}>Upload</Nav.Link>
             </Col>
-            <Col className="d-flex justify-content-center">
-                <PcdMenu pcd={pcd} setPcd={setPcd}/>
+            <Col md={4} sm={6} xs={6} className="d-flex flex-nowrap justify-content-center">
+                <PcdMenu className="navbar-button" pcd={pcd} changePCD={changePCD}/>
             </Col>
-            <Col className="d-flex justify-content-end">
-               <Button variant="dark">
+            <Col md={4} sm={6} xs={6} className="d-flex flex-nowrap justify-content-md-end justify-content-sm-center">
+               <Button variant="dark" className = "navbar-button">
                  Switch to AR
                </Button>
             </Col>

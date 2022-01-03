@@ -1,24 +1,24 @@
+import './PcdMenu.css'
 import React from "react";
-import { Dispatch, SetStateAction } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { eventNames } from "cluster";
 
 type PcdMenuProps = {
   pcd: string;
-  setPcd: Dispatch<SetStateAction<string>>;
+  changePCD: (newPCD: string) => void;
+  className: string;
 };
 
-const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
+const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
   const handleChange = (event: string | null, e: React.SyntheticEvent<unknown>) => {
-    setPcd(event!);
+    changePCD(event!);
   };
 
   var pcdList = ["online", "Rf10", "frame_00023"];
 
   return (
     <div>
-      <Dropdown onSelect={handleChange}>
-        <Dropdown.Toggle variant="dark">
+      <Dropdown onSelect={handleChange} className={className}>
+        <Dropdown.Toggle variant="dark" className={"w-100 menu-button"}>
           {pcd}
         </Dropdown.Toggle>
         <Dropdown.Menu>

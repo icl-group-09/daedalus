@@ -39,12 +39,7 @@
     transform: translate3d(-300px, 0, 0);
 }
 
-@media screen and (max-width: 583px) { 
-  #sidebar {
-    top: 78px !important;
-  }
-}
-@media screen and (max-width: 509px) { 
+@media screen and (max-width: 767px) { 
   #sidebar {
     top: 94px !important;
   }

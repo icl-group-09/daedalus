@@ -1,5 +1,4 @@
 import React from "react";
-import PcdMenu from "../menu/PcdMenu";
 import Slider from "react-input-slider";
 import { RenderType } from "../gpu/RenderType";
 import { RotationDir } from "../gpu/Rotate";
@@ -24,7 +23,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
     const [visibilityClass, setVisibilityClass] = useState("hide")
   
     const ClickHM = () => {
-        if (pointCloudType == RenderType.HM) {
+        if (pointCloudType === RenderType.HM) {
             setPointCloudType(RenderType.PCD);
         } else {
             setPointCloudType(RenderType.HM);
