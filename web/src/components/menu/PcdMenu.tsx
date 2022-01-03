@@ -7,9 +7,10 @@ type PcdMenuProps = {
   pcd: string;
   changePCD: (newPCD: string) => void;
   className: string;
+  disabled: boolean;
 };
 
-const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
+const PcdMenu = ({ pcd, changePCD, className, disabled }: PcdMenuProps) => {
   const handleChange = (event: string | null, e: React.SyntheticEvent<unknown>) => {
     changePCD(event!);
   };
@@ -43,12 +44,11 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
           console.log('Error: ', error)
       })
   }, [fetchFunc])
-  console.log("AHH")
 
   return (
     <div>
       <Dropdown onSelect={handleChange} className={className}>
-        <Dropdown.Toggle variant="dark" className={"w-100 menu-button"}>
+        <Dropdown.Toggle variant="dark" disabled={disabled} className={"w-100 menu-button"}>
           {pcd}
         </Dropdown.Toggle>
         <Dropdown.Menu>

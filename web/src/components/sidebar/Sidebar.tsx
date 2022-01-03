@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-input-slider";
 import { RenderType } from "../gpu/RenderType";
 import { RotationDir } from "../gpu/Rotate";
@@ -14,10 +14,11 @@ type SideBarProps = {
     setR: React.Dispatch<React.SetStateAction<RotationDir>>;
     pointSize: number;
     setPointSize: React.Dispatch<React.SetStateAction<number>>;
+    disabled: boolean;
 }
 
 
-function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPointSize}: SideBarProps){
+function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPointSize, disabled}: SideBarProps){
 
     const [menuVisibility, setMenuVisibility] = useState(true);
     const [visibilityClass, setVisibilityClass] = useState("hide")
@@ -40,11 +41,21 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
             setVisibilityClass("hide")
         }
     };
+
+    useEffect(() => {
+      if (disabled) {
+        setVisibilityClass("hidden");
+      } else {
+        setMenuVisibility(true);
+        setVisibilityClass("hide");
+      }
+
+    }, [disabled])
   
   
     return (
         <div id = "sidebar" className={visibilityClass}>
-            <button id="showButton" onClick={toggleMenu}>Tools</button>
+            <button id="showButton" onClick={toggleMenu} disabled={disabled}>Tools</button>
             <div id="toolsContainer">
                 <div id="tools" className={visibilityClass}>
                     
