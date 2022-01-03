@@ -98,7 +98,7 @@ disable=raw-checker-failed,
         consider-using-from-import,
         trailing-newlines,
         no-else-return,
-        unspecified-encoding
+        unspecified-encoding,
         too-many-locals
 
 # Enable the message, report, category or checker with the given id(s). You can
