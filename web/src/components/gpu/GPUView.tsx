@@ -36,11 +36,6 @@ const GPUView = ({
   iframe.setAttribute("class", "ar-iframe")
 
   const alreadyStarted = useRef(false)
-  const updateGLTFAttr = (token: string) => {
-    sessionStorage.setItem("gltfName", token)
-    alreadyStarted.current = false;
-  }
-
 
   useEffect(() => {
       if (gpuViewRef.current!.children.length === 0) {
@@ -52,6 +47,10 @@ const GPUView = ({
   }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, width, height, gpuViewRef]);
 
   useEffect(() => {
+    const updateGLTFAttr = (token: string) => {
+      sessionStorage.setItem("gltfName", token)
+      alreadyStarted.current = false;
+    }
     const currChild = gpuViewRef.current!.children[0];
     gpuViewRef.current!.removeChild(currChild)
     if (!isAR) {
@@ -68,7 +67,7 @@ const GPUView = ({
       }
     }
 
-  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted, updateGLTFAttr])
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted])
 
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
