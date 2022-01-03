@@ -2,6 +2,7 @@ import os
 
 from flask import Blueprint, send_file, request
 from flask.wrappers import Response
+from pcd_generator.pointcloud import generate_pcd
 import config
 import services.AzureService as AzureService
 import services.CloudStorageService as CloudStorageService
@@ -56,17 +57,32 @@ def upload_terrain_data() -> Response:
         return Response("No file(s) uploaded", status=400)
 
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
-    if not valid_uploads:
+    if not valid_uploads or len(valid_uploads) != 2:
         print("No valid uploads")
         return Response('invalid image(s)', 400)
 
-    for upload in valid_uploads:
+    paths = []
+    pcdname = ""
+    for i, upload in enumerate(valid_uploads):
         if upload.filename is None:
             # Should never fall into this case because we filter out None files
             return Response('invalid image(s)', 400)
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
+        paths.append(save_path)
+        if i == 0:
+            pcdname = upload.filename
 
         upload.save(save_path)
+
+    pcdname = pcdname[:pcdname.rfind('.')] + ".pcd"
+
+    pcd_path = generate_pcd(paths[0], paths[1], pcdname)
+
+    cloud_storage_service: CloudStorageService.CloudStorageService = (
+        AzureService.AzureService()
+    )
+
+    cloud_storage_service.upload_file(pcdname, pcd_path)
 
     return Response(status=200)
