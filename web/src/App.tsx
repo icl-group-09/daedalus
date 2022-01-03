@@ -80,7 +80,7 @@ function App() {
           pcdPointSize={pointSize}
           canvas={canvas}
           rotateDir={r}
-          exporting={isAR}
+          isAR={isAR}
         />
       </div>
     </div>

@@ -14,7 +14,7 @@ type GPUViewProps = {
   pcdPointSize: number;
   canvas: HTMLCanvasElement;
   rotateDir: RotationDir;
-  exporting: boolean;
+  isAR: boolean;
 };
 
 const GPUView = ({
@@ -26,7 +26,7 @@ const GPUView = ({
   pcdPointSize,
   canvas,
   rotateDir,
-  exporting
+  isAR
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
@@ -54,7 +54,7 @@ const GPUView = ({
   useEffect(() => {
     const currChild = gpuViewRef.current!.children[0];
     gpuViewRef.current!.removeChild(currChild)
-    if (!exporting) {
+    if (!isAR) {
       gpuViewRef.current!.appendChild(canvas);
     } else {
       if (!alreadyStarted.current) {
@@ -68,7 +68,7 @@ const GPUView = ({
       }
     }
 
-  }, [canvas, exporting, gpuViewRef, iframe, alreadyStarted, updateGLTFAttr])
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted, updateGLTFAttr])
 
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
