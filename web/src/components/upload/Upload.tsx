@@ -52,7 +52,7 @@ export function Upload({show, setShowUpload}: UploadProps){
 		})
 		.catch((error) => {
 			console.error('Error:', error);
-               setStatus(["There was an error with your upload, please try again later.", "danger"]);
+            setStatus(["There was an error with your upload, please try again later.", "danger"]);
 		});
 	};
 

@@ -18,21 +18,31 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
 
   const[pcdList, setPcdList] = useState<string[]>([]);
 
-  const loadInitialPcdList = async() => {
-    const response = await fetch(`/getFileNames`,
+  
+  const testFunc = ((input: RequestInfo, init?: RequestInit | undefined) => { return new Promise<Response>((resolve, reject) => {}); })
+
+  let fetchFunc = testFunc;
+  try {
+    fetchFunc = fetch;
+  } catch (e) {
+    fetchFunc = testFunc;
+  }
+
+  const loadInitialPcdList = () => {
+    fetchFunc(`/getFileNames`,
       {
         method: 'GET',
         headers: { accept: "application/json" }
-      })
-
-      if (response.ok){
-        var json_names = await (response.json())
+      }).then((response) => response.json())
+      .then((json_names)=> {
         var names = json_names["body"]
           .split(",")
           .filter((name : string) => {return name.endsWith(".pcd")})
           .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
         setPcdList(names)
-      }
+      }).catch((error) => {
+          console.log('Error: ', error)
+      })
     }
 
   useEffect(() => {
