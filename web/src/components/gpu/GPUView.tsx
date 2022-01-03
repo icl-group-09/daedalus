@@ -31,17 +31,16 @@ const GPUView = ({
   const gpuViewRef = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
-    // Run the first time this component renders
      if (gpuViewRef.current!.children.length === 0) {
-       gpuViewRef.current!.appendChild(canvas);
+      // Run the first time this component renders
+      gpuViewRef.current!.appendChild(canvas);
      }
     graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
     graphicsHandler.resizeRenderer(width, height);
-
   });
+
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
-
   }, [graphicsHandler, rotateDir]);
 
   return (

@@ -6,13 +6,14 @@ import { RotationDir } from "./Rotate";
 import { IGraphicsHandler } from "./IGraphicsHandler"
 
 export class ThreeHandler implements IGraphicsHandler {
-  private readonly renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true
-  });
 
-  private readonly scene: THREE.Scene = new THREE.Scene();
-  private camera: THREE.PerspectiveCamera;
+  // Renderer Objects 
+  private readonly renderer: THREE.WebGLRenderer;
+  private readonly scene: THREE.Scene;
+  private readonly controls; 
+  private readonly camera: THREE.PerspectiveCamera;
+
+  // Current Scene Properties
   private currentFile?: String;
   private points?: THREE.Points<
     THREE.BufferGeometry,
@@ -24,22 +25,31 @@ export class ThreeHandler implements IGraphicsHandler {
   private currRotation = {X: 0, Y: 0, Z: 0}
   private isHeatMap = false;
 
+  // Singleton Three Handler
   private static instance: ThreeHandler;
 
+  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
+    if (!ThreeHandler.instance) {
+      ThreeHandler.instance = new ThreeHandler(width, height, canvas);
+    }
+    return ThreeHandler.instance;
+  }
 
   private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
-    this.createCubeTexture()
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.scene = new THREE.Scene();
+    this.initSkybox()
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
     this.renderScene();
-  
   }
 
-  private createCubeTexture() {
+  private initSkybox() {
     let geometry = new THREE.BoxGeometry(25,25,25);
+    // Must be right, left, up, down, front, back
     const images = [
       'highresbox_rt.png',
       'highresbox_lf.png',
@@ -56,15 +66,10 @@ export class ThreeHandler implements IGraphicsHandler {
     this.scene.add(cube);
   }
 
-  public static getInstance(width: number, height: number, canvas: HTMLCanvasElement): ThreeHandler {
-    if (!ThreeHandler.instance) {
-      ThreeHandler.instance = new ThreeHandler(width, height, canvas);
-    }
-    return ThreeHandler.instance;
-  }
 
   private initCamera() {
     this.camera.position.set(1200, -250, 2000);
+    this.controls.update();
     this.scene.add(this.camera);
   }
 
@@ -74,31 +79,32 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   private initControls() {
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.addEventListener("change", () => {
+    this.controls.addEventListener("change", () => {
       this.renderScene();
     });
-    controls.minDistance = 0.5;
-    controls.maxDistance = 10;
+    this.controls.minDistance = 0.5;
+    this.controls.maxDistance = 10;
+    this.controls.update();
   }
 
   rotatePCD(rotateDir: RotationDir) {
-      if (this.points !== undefined) {
-        this.points.geometry.rotateX(rotateDir.X - this.currRotation.X);
-        this.points.geometry.rotateY(rotateDir.Y - this.currRotation.Y);
-        this.points.geometry.rotateZ(rotateDir.Z - this.currRotation.Z);
-        this.currRotation = rotateDir;
-        if (this.isHeatMap) {
-          this.renderHeatMap(this.points);
-        }
-        this.renderScene();
+    if (this.points !== undefined) {
+      this.points.geometry.rotateX(rotateDir.X - this.currRotation.X);
+      this.points.geometry.rotateY(rotateDir.Y - this.currRotation.Y);
+      this.points.geometry.rotateZ(rotateDir.Z - this.currRotation.Z);
+      this.currRotation = rotateDir;
+      if (this.isHeatMap) {
+        this.renderHeatMap(this.points);
       }
+      this.renderScene();
+    }
   }
 
   resizeRenderer(width: number, height: number) {
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+    this.renderScene();
   }
 
   renderPCD(
@@ -126,6 +132,7 @@ export class ThreeHandler implements IGraphicsHandler {
       this.renderScene();
     }
   }
+
 
   private setPointsProperties(
     points: THREE.Points<
