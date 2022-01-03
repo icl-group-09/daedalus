@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <title>Augmented Reality</title>
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script> 
+
+  <script>
+    // We need to download the gltf after we have loaded all the HTML
+    document.addEventListener("DOMContentLoaded", e => {
+      const token = sessionStorage.getItem("gltfName")
+
+      const fullPath = `/get_gltf/${token}.gltf`
+      document.getElementById("ar-model")?.setAttribute("gltf-model", fullPath);
+    })
+
+    window.addEventListener('beforeunload',(event) =>{
+      fetch("/delete_gltf", {
+        method: "POST",
+        // NOTE: CORS here will have to be investigated when we do deployment
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: sessionStorage.getItem("gltfName") }),
+      })
+    });
+  </script>
+</head>
+<body style='margin: 0px; overflow: hidden;'>
+  <a-scene
+    arjs
+    embedded
+    renderer="logarithmicDepthBuffer: true;"
+    vr-mode-ui="enabled: false"
+    gesture-detector>
+      <a-marker
+        preset="hiro"
+        raycaster="objects: .clickable"
+        emitevents="true"
+        cursor="fuse: false; rayOrigin: mouse;"> 
+        <a-entity
+          id="ar-model"
+          gltf-model=""
+          position="0 0 0"
+          scale="0.5 0.5 0.5"
+          rotation = "-90 0 0"
+          class="clickable"
+          gesture-handler>
+        </a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+  </a-scene> 
+</body>
+</html>

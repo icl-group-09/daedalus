@@ -1,7 +1,7 @@
-import os
-
-from flask import Blueprint, send_file, request
+from flask import request, Blueprint, send_file, jsonify
 from flask.wrappers import Response
+import secrets
+import os
 from pcd_generator.pointcloud import generate_pcd
 import config
 import services.AzureService as AzureService
@@ -39,34 +39,69 @@ def get_pcd(filename: str) -> Response:
             pass
 
 
-UPLOAD_DIR: Path = Path(__file__).parent / 'uploads'
+@bp.route("/get_gltf/<string:token>.gltf", methods=["GET"])
+def get_gltf(token: str) -> Response:
+    path = f"{os.getcwd()}/gltfs/{token}.gltf"
+    if os.path.exists(path):
+        res = send_file(path)
+        res.headers.add("Access-Control-Allow-Origin", "*")
+        return res
+    else:
+        return Response(f"Cannot find {token}.gltf", status=404)
+
+
+@bp.route("/upload_parsed", methods=["POST"])
+def generate_url_for_gltf() -> Response:
+    content = request.json
+    token = secrets.token_urlsafe(16)
+
+    with open(f"{os.getcwd()}/gltfs/{token}.gltf", "w") as f:
+        assert content is not None
+        f.write(content["rawGLTF"])
+
+    return jsonify({"path": token})
+
+@bp.route("/delete_gltf", methods=["POST"])
+def delete_gltf_file() -> Response:
+    content = request.json
+
+    assert content is not None
+    name = content["name"]
+    os.remove(f"{os.getcwd()}/gltfs/{name}.gltf")
+
+    return jsonify({})
+
+
+UPLOAD_DIR: Path = Path(__file__).parent / "uploads"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def is_valid_upload(upload: FileStorage) -> bool:
     # some validation logic
     if upload.filename is None:
         return False
-    return Path(upload.filename).suffix.lower() in ['.jpg', '.jpeg', '.png', '.tif']
+    return Path(upload.filename).suffix.lower() in [".jpg", ".jpeg", ".png", ".tif"]
+
 
 @bp.route("/uploadTerrainData", methods=["POST"])
 def upload_terrain_data() -> Response:
-    uploaded_files = request.files.getlist('images')
+    uploaded_files = request.files.getlist("images")
     if not uploaded_files or not uploaded_files[0].filename:
         print("No uploaded files")
-        print(str(request.files.getlist('images')))
+        print(str(request.files.getlist("images")))
         return Response("No file(s) uploaded", status=400)
 
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads or len(valid_uploads) != 2:
         print("No valid uploads")
-        return Response('invalid image(s)', 400)
+        return Response("invalid image(s)", 400)
 
     paths = []
     pcdname = ""
     for i, upload in enumerate(valid_uploads):
         if upload.filename is None:
             # Should never fall into this case because we filter out None files
-            return Response('invalid image(s)', 400)
+            return Response("invalid image(s)", 400)
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
         paths.append(save_path)

@@ -26,33 +26,33 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
   } as const;
 
   const menuColor = {
-    background: "white"
+    background: "white",
   } as const;
 
   return (
     <div style={menuStyle}>
       <div style={menuColor}>
-    <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={pcd}
-          onChange={handleChange}
-          data-testid="select-menu"
-          inputProps ={{"data-testid": "menu-items"}}
-        >
-          {pcdList.map((pcd, i) => {
-            return (
-              <MenuItem key={i} value={pcd}>
-                {pcd}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-    </Box>
-    </div>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={pcd}
+              onChange={handleChange}
+              data-testid="select-menu"
+              inputProps ={{"data-testid": "menu-items"}}
+            >
+              {pcdList.map((pcd, i) => {
+                return (
+                  <MenuItem key={i} value={pcd}>
+                    {pcd}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+        </div>
     </div>
   );
 };
