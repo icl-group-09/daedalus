@@ -34,13 +34,13 @@ const PcdMenu = ({ pcd, setPcd }: PcdMenuProps) => {
       <div style={menuColor}>
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
-        {/* <InputLabel id="demo-simple-select-label">PCD</InputLabel> */}
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={pcd}
-          label="Age"
           onChange={handleChange}
+          data-testid="select-menu"
+          inputProps ={{"data-testid": "menu-items"}}
         >
           {pcdList.map((pcd, i) => {
             return (
