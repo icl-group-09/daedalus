@@ -23,10 +23,14 @@ class AzureService(CloudStorageService):
         except ResourceNotFoundError as err:
             raise FileNotFoundError from err
 
-
     def list_file_names(self, container_name:str = config.BLOB_CONTAINER):
         container_client = self.blob_service_client.get_container_client(container_name)
         blobs_list = container_client.list_blobs()
         blobs_names = list(map(lambda x : x.name, blobs_list))
         return blobs_names
 
+    def upload_file(self, filename: str, upload_file_path: str) -> None:
+        blob_client = self.blob_service_client.get_blob_client(
+            container=config.BLOB_CONTAINER, blob=filename)
+        with open(upload_file_path, "rb") as upload_file:
+            blob_client.upload_blob(upload_file, overwrite=True)
