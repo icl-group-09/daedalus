@@ -30,50 +30,13 @@ export class ThreeHandler implements IGraphicsHandler {
   private constructor(width: number, height: number, canvas: HTMLCanvasElement) {
     this.camera = new THREE.PerspectiveCamera(30, width / height, 0.01, 40);
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas });
-    this.createSkybox();
+    this.createCubeTexture()
     this.initCamera();
     this.initRenderer(width, height);
     this.initControls();
     this.renderScene();
   
   }
-
-  private createSkybox() {
-    this.createCubeTexture()
-    /*new THREE.CubeTextureLoader()
-    .setPath('/')
-    .load(
-        // urls of images used in the cube texture
-        // Order must be rt, lf, up, dn, ft, bk
-        [
-            'highresbox_rt.png',
-            'highresbox_lf.png',
-            'highresbox_up.png',
-            'highresbox_dn.png',
-            'highresbox_ft.png',
-            'highresbox_bk.png'
-            
-        ],
-        // what to do when loading is over
-         (cubeTexture) => {
-            // Geometry
-            const skybox = new THREE.BoxGeometry(100000, 100000, 100000);
-            // Material
-            var material = new THREE.MeshBasicMaterial({
-                // CUBE TEXTURE can be used with
-                // the environment map property of
-                // a material.
-                envMap: cubeTexture
-            });
-            // Mesh
-            var mesh = new THREE.Mesh(skybox, material);
-            this.scene.add(mesh);
-            // CUBE TEXTURE is also an option for a background
-            //cubeTexture.minFilter = THREE.LinearFilter;
-            // this.scene.background = cubeTexture;
-        }
-    );*/
-  }  
 
   private createCubeTexture() {
     let geometry = new THREE.BoxGeometry(25,25,25);
@@ -101,7 +64,6 @@ export class ThreeHandler implements IGraphicsHandler {
   }
 
   private initCamera() {
-    //this.camera.position.set(0, 0, 1);
     this.camera.position.set(1200, -250, 2000);
     this.scene.add(this.camera);
   }
@@ -135,6 +97,7 @@ export class ThreeHandler implements IGraphicsHandler {
 
   resizeRenderer(width: number, height: number) {
     this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   }
 
