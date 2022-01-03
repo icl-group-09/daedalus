@@ -7,17 +7,9 @@ import Sidebar from "./components/sidebar/Sidebar"
 import { ThreeHandler } from "./components/gpu/ThreeHandler";
 import { RenderType } from "./components/gpu/RenderType";
 import { DUMMY_GRAPHICS_HANDLER } from "./components/gpu/IGraphicsHandler";
-import {
-  BrowserRouter as Router,
-  // Routes,
-  // Route,
-  // Link
-} from "react-router-dom";
 import { useState, createContext, useContext } from "react";
 import Upload from "./components/upload/Upload";
 import About from "./components/about/About";
-
-export const EnableGPUContext = createContext(true);
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 
@@ -27,6 +19,8 @@ function onWindowResize(setW: React.Dispatch<React.SetStateAction<number>>,
   setH(window.innerHeight);
 }
 
+export const EnableGPUContext = createContext(true);
+
 function App() {
 
   const [pcd, setPcd] = useState("online");
@@ -35,6 +29,7 @@ function App() {
   const [h, setH] = useState(window.innerHeight);
   const [r, setR] = useState({X: 0, Y: 0, Z: 0});
   const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
+  const [exporting, setExporting] = useState(false);
   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
   const [showUpload, setShowUpload] = useState(false);
@@ -53,8 +48,15 @@ function App() {
     : ThreeHandler.getInstance(w, h, canvas);
 
   return (
-    <Router>
-     <NavBar pcd={pcd} changePCD={changePCD} setShowUpload={setShowUpload} setShowAbout={setShowAbout}></NavBar>
+    <div>
+     <NavBar 
+        pcd={pcd} 
+        changePCD={changePCD} 
+        setShowUpload={setShowUpload} 
+        setShowAbout={setShowAbout}
+        setExporting={setExporting}
+        />
+
      <Upload show={showUpload} setShowUpload={setShowUpload}/> 
      <About show={showAbout} setShowAbout={setShowAbout}/> 
       <div className = "App">
@@ -75,9 +77,10 @@ function App() {
           pcdPointSize={pointSize}
           canvas={canvas}
           rotateDir={r}
+          exporting={exporting}
         />
       </div>
-    </Router>
+    </div>
   );
 }
 

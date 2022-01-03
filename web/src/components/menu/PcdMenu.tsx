@@ -1,6 +1,8 @@
 import './PcdMenu.css'
 import React from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useState } from "react";
+import { useEffect } from "react";
 
 type PcdMenuProps = {
   pcd: string;
@@ -13,7 +15,31 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
     changePCD(event!);
   };
 
-  var pcdList = ["online", "Rf10", "frame_00023"];
+
+  const[pcdList, setPcdList] = useState<string[]>([]);
+
+  const loadInitialPcdList = async() => {
+    const response = await fetch(`/getFileNames`,
+      {
+        method: 'GET',
+        headers: { accept: "application/json" }
+      })
+
+      if (response.ok){
+        var json_names = await (response.json())
+        var names = json_names["body"]
+          .split(",")
+          .filter((name : string) => {return name.endsWith(".pcd")})
+          .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
+        setPcdList(names)
+      }
+    }
+
+  useEffect(() => {
+    loadInitialPcdList()
+  },[])
+
+
 
   return (
     <div>

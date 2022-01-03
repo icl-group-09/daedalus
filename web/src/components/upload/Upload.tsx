@@ -47,13 +47,13 @@ export function Upload({show, setShowUpload}: UploadProps){
 		)
      .then((response) => response.json())
 		 .then((result) => {
-				console.log('Success:', result);
-        setStatus(["Upload complete!", "success"]);
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-        setStatus(["There was an error with your upload, please try again later.", "danger"]);
-			});
+		    console.log('Success:', result);
+            setStatus(["Upload complete!", "success"]);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+               setStatus(["There was an error with your upload, please try again later.", "danger"]);
+		});
 	};
 
     return(

@@ -13,9 +13,10 @@ type NavBarProps = {
   changePCD: (newPCD: string) => void;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
   setShowAbout: React.Dispatch<React.SetStateAction<boolean>>;
+  setExporting: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout }: NavBarProps) {
+function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout, setExporting }: NavBarProps) {
 
   return (
     <Navbar bg="black" expand="lg">
@@ -30,7 +31,7 @@ function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout }: NavBarProps) {
                 <PcdMenu className="navbar-button" pcd={pcd} changePCD={changePCD}/>
             </Col>
             <Col md={4} sm={6} xs={6} className="d-flex flex-nowrap justify-content-md-end justify-content-sm-center">
-               <Button variant="dark" className = "navbar-button">
+               <Button onClick={()=>setExporting(true)} variant="dark" className = "navbar-button">
                  Switch to AR
                </Button>
             </Col>
