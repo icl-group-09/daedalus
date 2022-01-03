@@ -47,7 +47,7 @@ const PcdMenu = ({ pcd, changePCD, className }: PcdMenuProps) => {
 
   useEffect(() => {
     loadInitialPcdList()
-  },[])
+  },[loadInitialPcdList])
 
 
 
