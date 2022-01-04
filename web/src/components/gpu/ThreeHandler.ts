@@ -25,6 +25,7 @@ export class ThreeHandler implements IGraphicsHandler {
     | THREE.InterleavedBufferAttribute;
   private currRotation = {X: 0, Y: 0, Z: 0}
   private isHeatMap = false;
+  private cube: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]> = new THREE.Mesh();
 
   // Singleton Three Handler
   private static instance: ThreeHandler;
@@ -63,8 +64,8 @@ export class ThreeHandler implements IGraphicsHandler {
     const cubeMaterials = images.map(image => {
       return new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(image), side: THREE.DoubleSide })
     })
-    const cube = new THREE.Mesh( geometry, cubeMaterials );
-    this.scene.add(cube);
+    this.cube = new THREE.Mesh( geometry, cubeMaterials );
+    this.scene.add(this.cube);
   }
 
 
@@ -144,6 +145,7 @@ export class ThreeHandler implements IGraphicsHandler {
   ): void {
     const parse = () => {
       // Get string gltf
+      this.scene.remove(this.cube);
       const exporter = new GLTFExporter();
       exporter.parse(
         this.scene,
@@ -161,7 +163,10 @@ export class ThreeHandler implements IGraphicsHandler {
             body: JSON.stringify({ rawGLTF: JSON.stringify(gltf) }),
           })
             .then(res => res.json())
-            .then(data => cb(data.path));
+            .then(data => {
+              this.scene.add(this.cube); 
+              cb(data.path)
+            });
         }, {}
       );
     };
