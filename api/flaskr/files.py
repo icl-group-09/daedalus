@@ -1,4 +1,3 @@
-
 import os
 from flask import Blueprint, send_file, request, json, jsonify
 from flask.wrappers import Response
@@ -62,6 +61,7 @@ def generate_url_for_gltf() -> Response:
 
     return jsonify({"path": token})
 
+
 @bp.route("/delete_gltf", methods=["POST"])
 def delete_gltf_file() -> Response:
     content = request.json
@@ -95,7 +95,7 @@ def upload_terrain_data() -> Response:
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads or len(valid_uploads) != 2:
         print("No valid uploads")
-        return jsonify({"success": "invalid image(s)"})
+        return jsonify({"success": "invalid file formats(s)"})
 
     paths = []
     pcdname = ""
@@ -111,7 +111,7 @@ def upload_terrain_data() -> Response:
 
         upload.save(save_path)
 
-    pcdname = pcdname[:pcdname.rfind('.')] + ".pcd"
+    pcdname = pcdname[: pcdname.rfind(".")] + ".pcd"
 
     pcd_path = generate_pcd(paths[0], paths[1], pcdname)
 
@@ -122,8 +122,7 @@ def upload_terrain_data() -> Response:
     cloud_storage_service.upload_file(pcdname, pcd_path)
     print("Upload complete")
 
-    return jsonify({'success': 'upload success'})
-
+    return jsonify({"success": "upload success"})
 
 
 @bp.route("/getFileNames", methods=["GET"])
@@ -132,7 +131,8 @@ def get_file_names() -> Response:
         AzureService.AzureService()
     )
     file_names = cloud_storage_service.list_file_names()
-    str_file_names = {"body" : ",".join(file_names)}
+    str_file_names = {"body": ",".join(file_names)}
 
-    return Response(response = json.dumps(str_file_names),
-     status = 200, mimetype='application/json')
+    return Response(
+        response=json.dumps(str_file_names), status=200, mimetype="application/json"
+    )

@@ -62,7 +62,7 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
 
         # Normalise Heightmap
         a = 0
-        b = 0.06
+        b = 0.075
         num = (depth_values - np.min(depth_values)) * (b - a)
         den = np.max(depth_values) - np.min(depth_values)
         depth_values = a + (num / den)
@@ -76,7 +76,7 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
                 if len(image.shape) == 3 and image.shape[2] == 4:
                     if image[y, x, 3] == 0:
                         continue
-                
+
                 # Calculate colour as hex value
                 hex_color = (
                     image[y, x, 0] * (16 ** 4)

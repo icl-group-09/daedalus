@@ -59,7 +59,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
             <div id="toolsContainer">
                 <div id="tools" className={visibilityClass}>
                     
-                    <h5> Toggle Heat Map </h5> 
+                    <h5> Toggle Height Map </h5> 
                     <label>
                         <Switch onChange={ClickHM} checked={pointCloudType === RenderType.HM} onColor="#86d3ff"
                         onHandleColor="#2693e6"

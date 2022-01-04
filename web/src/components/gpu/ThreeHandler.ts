@@ -243,7 +243,20 @@ export class ThreeHandler implements IGraphicsHandler {
     for (var j = 0; j < numPoints; j++) {
       const y = points.geometry.attributes.position.array[j * 3 + 1];
       const heightProp = (y - minY) / range;
-      const color = new THREE.Color(heightProp + 0.25, 0, 1 - heightProp);
+      var color;
+      if (heightProp > 0.55) {
+         const g = 1 - ((heightProp - 0.55) / (1 - 0.55))
+         color = new THREE.Color(1, g , 0);
+      } else if (heightProp > 0.3) {
+         const r = ((heightProp - 0.3) / (0.55 - 0.3))
+         color = new THREE.Color(r, 1 , 0);
+      } else if (heightProp > 0.15) {
+         const b = 1 - ((heightProp - 0.15) / (0.3 - 0.15))
+         color = new THREE.Color(0, 1 , b);
+      } else {
+         const g = ((heightProp - 0) / (0.15 - 0))
+         color = new THREE.Color(0, g , 1);
+      }
       colors.push(color.r, color.g, color.b);
     }
     points.geometry.setAttribute(
