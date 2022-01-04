@@ -8,9 +8,10 @@ import Form from 'react-bootstrap/Form'
 type UploadProps = {
   show: boolean;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
+  cb: () => void;
 }
 
-export function Upload({show, setShowUpload}: UploadProps){
+export function Upload({show, setShowUpload, cb}: UploadProps){
 
   const [terrainFile, setTerrainFile] = useState<File>();
   const [heightFile, setHeightFile] = useState<File>();
@@ -33,6 +34,7 @@ export function Upload({show, setShowUpload}: UploadProps){
       setStatus(["Upload both a terrain and height map", "warning"]);
       return;
     }
+    setStatus(["Uploading... please wait", "secondary"])
 		const formData = new FormData();
 
 		formData.append('images', terrainFile!);
@@ -45,14 +47,15 @@ export function Upload({show, setShowUpload}: UploadProps){
 				body: formData,
 			}
 		)
-     .then((response) => response.json())
-		 .then((result) => {
-		    console.log('Success:', result);
-            setStatus(["Upload complete!", "success"]);
+    .then((response) => response.json())
+	  .then((result) => {
+	    console.log('Success:', result);
+       setStatus(["Upload complete!", "success"]);
+       cb();
 		})
 		.catch((error) => {
 			console.error('Error:', error);
-            setStatus(["There was an error with your upload, please try again later.", "danger"]);
+      setStatus(["There was an error with your upload, please try again later.", "danger"]);
 		});
 	};
 
