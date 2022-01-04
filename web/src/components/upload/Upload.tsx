@@ -34,6 +34,7 @@ export function Upload({show, setShowUpload, cb}: UploadProps){
       setStatus(["Upload both a terrain and height map", "warning"]);
       return;
     }
+    setStatus(["Uploading... please wait", "secondary"])
 		const formData = new FormData();
 
 		formData.append('images', terrainFile!);
