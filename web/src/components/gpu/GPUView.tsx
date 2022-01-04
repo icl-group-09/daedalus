@@ -1,4 +1,5 @@
-import React from "react";
+import './GPUView.css'
+import React  from "react";
 import { IGraphicsHandler } from "./IGraphicsHandler";
 import { useEffect, useRef } from "react";
 import { RenderType } from "./RenderType";
@@ -13,7 +14,7 @@ type GPUViewProps = {
   pcdPointSize: number;
   canvas: HTMLCanvasElement;
   rotateDir: RotationDir;
-  exporting: boolean;
+  isAR: boolean;
 };
 
 const GPUView = ({
@@ -25,43 +26,52 @@ const GPUView = ({
   pcdPointSize,
   canvas,
   rotateDir,
-  exporting
+  isAR
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
+  const iframe = document.createElement("iframe");
+  iframe.setAttribute("src", "/arscene.html")
+  iframe.setAttribute("class", "ar-iframe")
+
+  const alreadyStarted = useRef(false)
 
   useEffect(() => {
-     if (gpuViewRef.current!.children.length === 0) {
-      // Run the first time this component renders
+      if (gpuViewRef.current!.children.length === 0) {
+        // Run the first time this component renders
+        gpuViewRef.current!.appendChild(canvas);
+       }
+      graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+      graphicsHandler.resizeRenderer(width, height);
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, width, height, gpuViewRef]);
+
+  useEffect(() => {
+    const updateGLTFAttr = (token: string) => {
+      sessionStorage.setItem("gltfName", token)
+      alreadyStarted.current = false;
+    }
+    const currChild = gpuViewRef.current!.children[0];
+    gpuViewRef.current!.removeChild(currChild)
+    if (!isAR) {
       gpuViewRef.current!.appendChild(canvas);
-     }
-    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
-    graphicsHandler.resizeRenderer(width, height);
-  });
+    } else {
+      if (!alreadyStarted.current) {
+        gpuViewRef.current!.appendChild(iframe);
+        graphicsHandler.uploadAsToGTLF(
+          pcdFilename,
+          pcdRenderType,
+          pcdPointSize,
+          updateGLTFAttr
+        );
+      }
+    }
+
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted])
 
   useEffect(() => {
     graphicsHandler.rotatePCD(rotateDir);
   }, [graphicsHandler, rotateDir]);
-
-  // For some reason when we press the button, the request is sent twice
-  // Having a ref to signal that we have already requested solves the issue
-  const alreadyStarted = useRef(false)
-
-  if (exporting && !alreadyStarted.current) {
-    alreadyStarted.current = true
-    const updateGLTFAttr = (token: string) => {
-      sessionStorage.setItem("gltfName", token)
-      window.location.href = "/arscene.html"
-    }
-    graphicsHandler.uploadAsToGTLF(
-      pcdFilename,
-      pcdRenderType,
-      pcdPointSize,
-      updateGLTFAttr
-    );
-    return <h1>Exporting to augmented reality...</h1>
-  }
 
   return (
     <div className="gpu-view" style={css}>

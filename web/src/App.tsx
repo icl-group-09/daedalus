@@ -29,7 +29,7 @@ function App() {
   const [h, setH] = useState(window.innerHeight);
   const [r, setR] = useState({X: 0, Y: 0, Z: 0});
   const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
-  const [exporting, setExporting] = useState(false);
+  const [isAR, setIsAR] = useState(false);
   window.addEventListener("resize", () => onWindowResize(setW, setH), false);
 
   const [showUpload, setShowUpload] = useState(false);
@@ -54,7 +54,8 @@ function App() {
         changePCD={changePCD} 
         setShowUpload={setShowUpload} 
         setShowAbout={setShowAbout}
-        setExporting={setExporting}
+        setIsAR={setIsAR}
+        isAR={isAR}
         />
 
      <Upload show={showUpload} setShowUpload={setShowUpload}/> 
@@ -66,7 +67,9 @@ function App() {
           r = {r}
           setR={setR} 
           pointSize={pointSize} 
-          setPointSize={setPointSize}/> 
+          setPointSize={setPointSize}
+          disabled={isAR} 
+          /> 
 
         <GPUView
           width={w}
@@ -77,7 +80,7 @@ function App() {
           pcdPointSize={pointSize}
           canvas={canvas}
           rotateDir={r}
-          exporting={exporting}
+          isAR={isAR}
         />
       </div>
     </div>

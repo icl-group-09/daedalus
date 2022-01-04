@@ -13,10 +13,11 @@ type NavBarProps = {
   changePCD: (newPCD: string) => void;
   setShowUpload: React.Dispatch<React.SetStateAction<boolean>>;
   setShowAbout: React.Dispatch<React.SetStateAction<boolean>>;
-  setExporting: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAR: React.Dispatch<React.SetStateAction<boolean>>;
+  isAR: boolean;
 };
 
-function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout, setExporting }: NavBarProps) {
+function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout, setIsAR, isAR }: NavBarProps) {
 
   return (
     <Navbar bg="black" expand="lg">
@@ -28,11 +29,11 @@ function NavBar ({ pcd, changePCD, setShowUpload, setShowAbout, setExporting }: 
                 <Nav.Link onClick={() => setShowUpload(true)}>Upload</Nav.Link>
             </Col>
             <Col md={4} sm={6} xs={6} className="d-flex flex-nowrap justify-content-center">
-                <PcdMenu className="navbar-button" pcd={pcd} changePCD={changePCD}/>
+                <PcdMenu className="navbar-button" pcd={pcd} changePCD={changePCD} disabled={isAR}/>
             </Col>
             <Col md={4} sm={6} xs={6} className="d-flex flex-nowrap justify-content-md-end justify-content-sm-center">
-               <Button onClick={()=>setExporting(true)} variant="dark" className = "navbar-button">
-                 Switch to AR
+               <Button onClick={()=>setIsAR((b) => !b)} variant="dark" className = "navbar-button">
+                 {isAR ? "View In 3D" : "View in AR"}
                </Button>
             </Col>
           </Row>
