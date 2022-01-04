@@ -243,7 +243,7 @@ export class ThreeHandler implements IGraphicsHandler {
     for (var j = 0; j < numPoints; j++) {
       const y = points.geometry.attributes.position.array[j * 3 + 1];
       const heightProp = (y - minY) / range;
-      const color = new THREE.Color(heightProp, 0, 1 - heightProp);
+      const color = new THREE.Color(heightProp + 0.25, 0, 1 - heightProp);
       colors.push(color.r, color.g, color.b);
     }
     points.geometry.setAttribute(
@@ -251,33 +251,6 @@ export class ThreeHandler implements IGraphicsHandler {
       new THREE.Float32BufferAttribute(colors, 3)
     );
   }
-
-  private loadHeightMap() {
-    var img = new Image()
-    img.onload = function () {
-      var canvas = document.createElement( 'canvas' );
-        canvas.width = img.width;
-        canvas.height = img.height;
-        var context = canvas.getContext( '2d' );
-        var size = img.width * img.height;
-        var data = new Float32Array( size );
-        context!.drawImage(img,0,0);
-        for ( var i = 0; i < size; i ++ ) {
-            data[i] = 0
-        }
-        var imgd = context!.getImageData(0, 0, img.width, img.height);
-        var pix = imgd.data;
-        var j=0;
-        for (var m = 0; m<pix.length; m+=4) {
-            var all = pix[m]+pix[m+1]+pix[m+2];
-            data[j++] = all/(12);
-        }
-        console.log("hi")
-        return data;
-    }
-    img.src = "/thing2.tif"
-  }
-
   
 
   private renderScene() {
