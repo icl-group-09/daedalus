@@ -14,10 +14,9 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
     image = mpimg.imread(image_location)
 
     if len(depth_map.shape) == 3:
-      rows, cols, _ = depth_map.shape
+        rows, cols, _ = depth_map.shape
     else:
-      rows, cols = depth_map.shape
-
+        rows, cols = depth_map.shape
 
     # Cut down pixels for time purpose
     # Computations need to be under 30s
@@ -34,17 +33,19 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
         pcd.write("SIZE 4 4 4 4\n")
         pcd.write("TYPE F F F F\n")
         pcd.write("COUNT 1 1 1 1\n")
-        pcd.write("WIDTH " + str(total_points)+"\n")
+        pcd.write("WIDTH " + str(total_points) + "\n")
         pcd.write("HEIGHT 1\n")
         pcd.write("VIEWPOINT 0 0 0 1 0 0 0\n")
-        pcd.write("POINTS " + str(total_points)+"\n")
+        pcd.write("POINTS " + str(total_points) + "\n")
         pcd.write("DATA ascii\n")
 
         depth_values = np.zeros((cols, rows))
         # Iterate thorugh all the pixels
         for x in range(0, cols, pixel_cut):
             for y in range(0, rows, pixel_cut):
-                height_sum = (depth_map[y, x, 0] + depth_map[y, x, 1] + depth_map[y, x, 2])
+                height_sum = (
+                    depth_map[y, x, 0] + depth_map[y, x, 1] + depth_map[y, x, 2]
+                )
                 depth_values[x][y] = height_sum
 
         checkAlpha = len(image.shape) == 3 and image.shape[2] == 4
@@ -55,16 +56,27 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
         depth_values = a + (num / den)
         for x in range(0, cols, pixel_cut):
             for y in range(0, rows, pixel_cut):
-              if checkAlpha:
-                if image[y, x, 3] == 0:
-                  continue
-              hex_color = image[y, x, 0] * \
-                    (16 ** 4) + image[y, x, 1] * (16 ** 2) + image[y, x, 2]
-              pcd.write(str(x/1000) + " " + str(-depth_values[x][y]) + " " +
-                          str(-y/1000) + " " + str(hex_color) + "\n")
+                if checkAlpha:
+                    if image[y, x, 3] == 0:
+                        continue
+                hex_color = (
+                    image[y, x, 0] * (16 ** 4)
+                    + image[y, x, 1] * (16 ** 2)
+                    + image[y, x, 2]
+                )
+                pcd.write(
+                    str(x / 1000)
+                    + " "
+                    + str(-depth_values[x][y])
+                    + " "
+                    + str(-y / 1000)
+                    + " "
+                    + str(hex_color)
+                    + "\n"
+                )
 
     return path
 
-  
+
 if __name__ == "__main__":
-  generate_pcd(sys.argv[1], sys.argv[2], "test")
+    generate_pcd(sys.argv[1], sys.argv[2], "test")
