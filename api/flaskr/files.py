@@ -90,19 +90,19 @@ def upload_terrain_data() -> Response:
     if not uploaded_files or not uploaded_files[0].filename:
         print("No uploaded files")
         print(str(request.files.getlist("images")))
-        return Response("No file(s) uploaded", status=400)
+        return jsonify({"success": "No file(s) uploaded"})
 
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads or len(valid_uploads) != 2:
         print("No valid uploads")
-        return Response("invalid image(s)", 400)
+        return jsonify({"success": "invalid image(s)"})
 
     paths = []
     pcdname = ""
     for i, upload in enumerate(valid_uploads):
         if upload.filename is None:
             # Should never fall into this case because we filter out None files
-            return Response("invalid image(s)", 400)
+            return jsonify({"success": "invalid image(s)"})
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
         paths.append(save_path)
@@ -120,8 +120,9 @@ def upload_terrain_data() -> Response:
     )
 
     cloud_storage_service.upload_file(pcdname, pcd_path)
+    print("Upload complete")
 
-    return Response('upload success', status=200)
+    return jsonify({'success': 'upload success'})
 
 
 
