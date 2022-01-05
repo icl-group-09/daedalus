@@ -68,7 +68,7 @@ def generate_pcd(image_location: str, depth_map_location: str, output_name: str)
         depth_values = a + (num / den)
 
         # scale
-        scale = 3
+        scale = 4
 
         for x in range(0, cols, pixel_cut_x):
             for y in range(0, rows, pixel_cut_y):

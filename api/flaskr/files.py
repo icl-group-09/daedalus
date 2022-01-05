@@ -114,12 +114,15 @@ def upload_terrain_data() -> Response:
     pcdname = pcdname[: pcdname.rfind(".")] + ".pcd"
 
     pcd_path = generate_pcd(paths[0], paths[1], pcdname)
+    os.remove(paths[0])
+    os.remove(paths[1])
 
     cloud_storage_service: CloudStorageService.CloudStorageService = (
         AzureService.AzureService()
     )
 
     cloud_storage_service.upload_file(pcdname, pcd_path)
+    os.remove(pcd_path)
     print("Upload complete")
 
     return jsonify({"success": "upload success"})
