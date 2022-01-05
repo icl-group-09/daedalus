@@ -11,6 +11,7 @@ export interface IGraphicsHandler {
   renderPCD(pcdFilename: string, mode: RenderType, pcdPointSize: number): void;
   resizeRenderer(width: number, height: number): void;
   rotatePCD(rotateDir: RotationDir): void;
+  scaleDepth(yScale: number): void
 }
 
 
@@ -24,4 +25,5 @@ export const DUMMY_GRAPHICS_HANDLER: IGraphicsHandler = {
   renderPCD: (pcdFilename: String) => {},
   resizeRenderer: (width: number, height: number) => {},
   rotatePCD: (rotateDir: RotationDir) => {},
+  scaleDepth: (yScale: number) => {}
 };
