@@ -1,4 +1,3 @@
-
 import os
 from flask import Blueprint, send_file, request, json, jsonify
 from flask.wrappers import Response
@@ -62,6 +61,7 @@ def generate_url_for_gltf() -> Response:
 
     return jsonify({"path": token})
 
+
 @bp.route("/delete_gltf", methods=["POST"])
 def delete_gltf_file() -> Response:
     content = request.json
@@ -90,19 +90,19 @@ def upload_terrain_data() -> Response:
     if not uploaded_files or not uploaded_files[0].filename:
         print("No uploaded files")
         print(str(request.files.getlist("images")))
-        return jsonify({"success": "No file(s) uploaded"})
+        return jsonify({"error": "No file(s) uploaded"})
 
     valid_uploads = list(filter(is_valid_upload, uploaded_files))
     if not valid_uploads or len(valid_uploads) != 2:
         print("No valid uploads")
-        return jsonify({"success": "invalid image(s)"})
+        return jsonify({"error": "Invalid file formats(s)"})
 
     paths = []
     pcdname = ""
     for i, upload in enumerate(valid_uploads):
         if upload.filename is None:
             # Should never fall into this case because we filter out None files
-            return jsonify({"success": "invalid image(s)"})
+            return jsonify({"error": "invalid image(s)"})
         filename = secure_filename(upload.filename)
         save_path = str(UPLOAD_DIR / filename)
         paths.append(save_path)
@@ -111,19 +111,21 @@ def upload_terrain_data() -> Response:
 
         upload.save(save_path)
 
-    pcdname = pcdname[:pcdname.rfind('.')] + ".pcd"
+    pcdname = pcdname[: pcdname.rfind(".")] + ".pcd"
 
     pcd_path = generate_pcd(paths[0], paths[1], pcdname)
+    os.remove(paths[0])
+    os.remove(paths[1])
 
     cloud_storage_service: CloudStorageService.CloudStorageService = (
         AzureService.AzureService()
     )
 
     cloud_storage_service.upload_file(pcdname, pcd_path)
+    os.remove(pcd_path)
     print("Upload complete")
 
-    return jsonify({'success': 'upload success'})
-
+    return jsonify({"success": "upload success"})
 
 
 @bp.route("/getFileNames", methods=["GET"])
@@ -132,7 +134,8 @@ def get_file_names() -> Response:
         AzureService.AzureService()
     )
     file_names = cloud_storage_service.list_file_names()
-    str_file_names = {"body" : ",".join(file_names)}
+    str_file_names = {"body": ",".join(file_names)}
 
-    return Response(response = json.dumps(str_file_names),
-     status = 200, mimetype='application/json')
+    return Response(
+        response=json.dumps(str_file_names), status=200, mimetype="application/json"
+    )
