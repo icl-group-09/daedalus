@@ -50,8 +50,13 @@ export function Upload({show, setShowUpload, cb}: UploadProps){
     .then((response) => response.json())
 	  .then((result) => {
 	    console.log('Success:', result);
-       setStatus(["Upload complete!", "success"]);
-       cb();
+		if (result.success !== undefined) {
+			setStatus(["Upload complete!", "success"]);
+			cb();
+		} else {
+			setStatus([result.error, "danger"]);
+		}
+  
 		})
 		.catch((error) => {
 			console.error('Error:', error);
