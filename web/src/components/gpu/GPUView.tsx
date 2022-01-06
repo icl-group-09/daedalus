@@ -53,6 +53,7 @@ const GPUView = ({
     const updateGLTFAttr = (token: string) => {
       sessionStorage.setItem("gltfName", token)
       alreadyStarted.current = false;
+      gpuViewRef.current!.appendChild(iframe);
     }
     const currChild = gpuViewRef.current!.children[0];
     gpuViewRef.current!.removeChild(currChild)
@@ -60,7 +61,6 @@ const GPUView = ({
       gpuViewRef.current!.appendChild(canvas);
     } else {
       if (!alreadyStarted.current) {
-        gpuViewRef.current!.appendChild(iframe);
         graphicsHandler.uploadAsToGTLF(
           pcdFilename,
           pcdRenderType,
