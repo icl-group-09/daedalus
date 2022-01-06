@@ -25,7 +25,7 @@ export const EnableGPUContext = createContext(true);
 
 function App() {
 
-  const [pcd, setPcd] = useState("online");
+  const [pcd, setPcd] = useState("");
   const [pointSize, setPointSize] = useState(0.003);
   const [w, setW] = useState(window.innerWidth);
   const [h, setH] = useState(window.innerHeight);
@@ -67,6 +67,9 @@ function App() {
           .filter((name : string) => {return name.endsWith(".pcd")})
           .map((name : string) => {return name.replace(/\.[^/.]+$/, "")})
          setPcdList(names)
+         if (pcd === "") {
+           setPcd(names[0]);
+         }
       }).catch((error) => {
           console.log('Error: ', error)
       })
