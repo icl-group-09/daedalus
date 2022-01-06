@@ -79,6 +79,12 @@ function App() {
     fetchPCDList.current();
    }, [fetchPCDList])
 
+   useEffect(() => {
+    document.title = "Daedalus"
+   }, []);
+ 
+
+
   return (
     <div>
      <NavBar 
