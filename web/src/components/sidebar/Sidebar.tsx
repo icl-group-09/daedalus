@@ -109,7 +109,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         axis="x"
                         xmax={5}
                         xstep={0.25}
-                        xmin={1}
+                        xmin={0.25}
                         x={yScale}
                         onChange={({ x }) => setyScale(x)}
                     />
