@@ -30,6 +30,7 @@ function App() {
   const [w, setW] = useState(window.innerWidth);
   const [h, setH] = useState(window.innerHeight);
   const [r, setR] = useState({X: 0, Y: 0, Z: 0});
+  const [yScale, setyScale] = useState(1)
   const [pointCloudType, setPointCloudType] = useState(RenderType.PCD);
   const [isAR, setIsAR] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
@@ -43,6 +44,7 @@ function App() {
     setR({X: 0, Y: 0, Z: 0});
     setPointCloudType(RenderType.PCD);
     setPointSize(0.003);
+	setyScale(1);
   }
 
   const graphicsHandler = !useContext(EnableGPUContext)
@@ -97,6 +99,8 @@ function App() {
           pointSize={pointSize} 
           setPointSize={setPointSize}
           disabled={isAR} 
+		  yScale={yScale}
+		  setyScale={setyScale}
           /> 
 
         <GPUView
@@ -109,6 +113,7 @@ function App() {
           canvas={canvas}
           rotateDir={r}
           isAR={isAR}
+		  yScale={yScale}
         />
       </div>
     </div>

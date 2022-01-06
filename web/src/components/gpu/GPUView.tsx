@@ -15,6 +15,7 @@ type GPUViewProps = {
   canvas: HTMLCanvasElement;
   rotateDir: RotationDir;
   isAR: boolean;
+  yScale: number;
 };
 
 const GPUView = ({
@@ -26,7 +27,8 @@ const GPUView = ({
   pcdPointSize,
   canvas,
   rotateDir,
-  isAR
+  isAR,
+  yScale
 }: GPUViewProps) => {
   const css = { width: `${width}px`, height: `${height}px` };
 
@@ -44,7 +46,8 @@ const GPUView = ({
        }
       graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
       graphicsHandler.resizeRenderer(width, height);
-  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, width, height, gpuViewRef]);
+	  graphicsHandler.scaleDepth(yScale);
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, width, height, yScale, gpuViewRef]);
 
   useEffect(() => {
     const updateGLTFAttr = (token: string) => {

@@ -10,7 +10,8 @@ test("Expect inital GPUView to call renderPCD on mount", () => {
     uploadAsToGTLF: jest.fn(() => {}),
     renderPCD: jest.fn((pcdFilename: String) => {}),
     resizeRenderer: jest.fn((width: number, height: number) => {}),
-    rotatePCD: jest.fn((rotateDir: RotationDir) => {})
+    rotatePCD: jest.fn((rotateDir: RotationDir) => {}),
+	scaleDepth: jest.fn((scaleY: number) => {})
   };
 
   const canvas: HTMLCanvasElement = document.createElement("canvas");
@@ -25,6 +26,8 @@ test("Expect inital GPUView to call renderPCD on mount", () => {
       pcdPointSize={0.005}
       canvas={canvas}
       rotateDir = {{X:0, Y:0, Z:0}}
+	  isAR={false}
+	  yScale={1}
     />
   );
 

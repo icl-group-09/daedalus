@@ -24,6 +24,7 @@ export class ThreeHandler implements IGraphicsHandler {
     | THREE.BufferAttribute
     | THREE.InterleavedBufferAttribute;
   private currRotation = {X: 0, Y: 0, Z: 0}
+  private currYScale = 1;
   private isHeatMap = false;
   private cube: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial[]> = new THREE.Mesh();
 
@@ -182,6 +183,13 @@ export class ThreeHandler implements IGraphicsHandler {
     this.createModelAnd(pcdFilename, renderType, pcdPointSize, renderCB);
   }
 
+  scaleDepth(yScale: number) {
+	  this.points?.geometry.scale(1, yScale/this.currYScale, 1);
+    this.currYScale = yScale
+    this.renderScene();
+  }
+
+
   private setPointsProperties(
     points: THREE.Points<
       THREE.BufferGeometry,
@@ -215,6 +223,7 @@ export class ThreeHandler implements IGraphicsHandler {
     points.geometry.center();
   }
 
+ 
 
   private renderHeatMap(
     points: THREE.Points<

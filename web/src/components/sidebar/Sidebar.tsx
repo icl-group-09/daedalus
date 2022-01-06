@@ -15,10 +15,12 @@ type SideBarProps = {
     pointSize: number;
     setPointSize: React.Dispatch<React.SetStateAction<number>>;
     disabled: boolean;
+	yScale: number;
+	setyScale:  React.Dispatch<React.SetStateAction<number>>;
 }
 
 
-function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPointSize, disabled}: SideBarProps){
+function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPointSize, disabled, yScale, setyScale}: SideBarProps){
 
     const [menuVisibility, setMenuVisibility] = useState(true);
     const [visibilityClass, setVisibilityClass] = useState("hide")
@@ -72,7 +74,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         width={35}/>
                     </label>
                     
-                    <h5> Rotation </h5>
+                    <h5 className="mt-3"> Rotation </h5>
                     <span> x: {Math.round(r.X / Math.PI * 180)} </span><br></br>
                     <Slider
                         axis="x"
@@ -91,7 +93,8 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         x={r.Y}
                         onChange={({x}) => setR((oldR) => ({X: oldR.X, Y: x, Z: oldR.Z}))}
                     /><br></br>
-                    <span> Point Size: {Math.round(pointSize * 10000) / 10000}</span>
+
+                    <h5 className="mt-3"> Point Size: {Math.round(pointSize * 10000) / 10000}</h5>
                     <Slider
                         axis="x"
                         xmax={0.1}
@@ -99,6 +102,16 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         xmin={0.001}
                         x={pointSize}
                         onChange={({ x }) => setPointSize(x)}
+                    />
+
+					<h5 className="mt-3"> Depth Scale: {yScale} </h5>
+                    <Slider
+                        axis="x"
+                        xmax={5}
+                        xstep={0.25}
+                        xmin={1}
+                        x={yScale}
+                        onChange={({ x }) => setyScale(x)}
                     />
                 </div>
             </div>
