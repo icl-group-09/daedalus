@@ -113,7 +113,7 @@ function App() {
           canvas={canvas}
           rotateDir={r}
           isAR={isAR}
-		  yScale={yScale}
+		      yScale={yScale}
         />
       </div>
     </div>
