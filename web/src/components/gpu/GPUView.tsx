@@ -1,5 +1,5 @@
 import './GPUView.css'
-import React  from "react";
+import React from "react";
 import { IGraphicsHandler } from "./IGraphicsHandler";
 import { useEffect, useRef } from "react";
 import { RenderType } from "./RenderType";
@@ -33,6 +33,7 @@ const GPUView = ({
   const css = { width: `${width}px`, height: `${height}px` };
 
   const gpuViewRef = React.createRef<HTMLDivElement>();
+
   const iframe = document.createElement("iframe");
   iframe.setAttribute("src", "/arscene.html")
   iframe.setAttribute("class", "ar-iframe")
@@ -40,14 +41,27 @@ const GPUView = ({
   const alreadyStarted = useRef(false)
 
   useEffect(() => {
-      if (gpuViewRef.current!.children.length === 0) {
-        // Run the first time this component renders
-        gpuViewRef.current!.appendChild(canvas);
-       }
-      graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+    if (gpuViewRef.current!.children.length === 0) {
+      // Run the first time this component renders
+      gpuViewRef.current!.appendChild(canvas);
+     }
+  }, [canvas, gpuViewRef])
+
+  useEffect(() => {
+    graphicsHandler.renderPCD(pcdFilename, pcdRenderType, pcdPointSize);
+  }, [graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize])
+
+  useEffect(() => {
       graphicsHandler.resizeRenderer(width, height);
-	  graphicsHandler.scaleDepth(yScale);
-  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, width, height, yScale, gpuViewRef]);
+  }, [graphicsHandler, width, height])
+
+  useEffect(() => {
+	    graphicsHandler.scaleDepth(yScale);
+  }, [graphicsHandler, yScale])
+
+  useEffect(() => {
+    graphicsHandler.rotatePCD(rotateDir);
+  }, [graphicsHandler, rotateDir]);
 
   useEffect(() => {
     const updateGLTFAttr = (token: string) => {
@@ -70,11 +84,8 @@ const GPUView = ({
       }
     }
 
-  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted])
+  }, [canvas, graphicsHandler, pcdFilename, pcdRenderType, pcdPointSize, isAR, gpuViewRef, iframe, alreadyStarted]);
 
-  useEffect(() => {
-    graphicsHandler.rotatePCD(rotateDir);
-  }, [graphicsHandler, rotateDir]);
 
   return (
     <div className="gpu-view" style={css}>

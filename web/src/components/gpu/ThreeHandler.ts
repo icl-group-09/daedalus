@@ -179,6 +179,9 @@ export class ThreeHandler implements IGraphicsHandler {
     renderType: RenderType,
     pcdPointSize: number
   ): void {
+    if (pcdFilename === "") {
+      return;
+    }
     const renderCB = () => this.renderScene()
     this.createModelAnd(pcdFilename, renderType, pcdPointSize, renderCB);
   }
