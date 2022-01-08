@@ -104,7 +104,7 @@ function Sidebar({pointCloudType, setPointCloudType, r, setR, pointSize, setPoin
                         onChange={({ x }) => setPointSize(x)}
                     />
 
-					<h5 className="mt-3"> Depth Scale: {yScale} </h5>
+					          <h5 className="mt-3"> Depth Scale: {yScale} </h5>
                     <Slider
                         axis="x"
                         xmax={5}
